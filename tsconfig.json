@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@public/*": ["./public/*"],
+      "@mocks/*": ["./__mocks__/*"]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest"]
+  },
+  "include": [
+    "postcss.config.mjs",
+    "next.config.mjs",
+    "src/types/**/*.d.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "__mocks__/svgrMock.jsx",
+    "jest.setup.js"
+  ],
+  "exclude": ["node_modules", "cypress.config.ts", "cypress/**/*.tsx", "cypress"]
+}
