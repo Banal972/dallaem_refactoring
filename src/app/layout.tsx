@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { SessionProvider } from "next-auth/react"
 import localFont from "next/font/local"
 import { cookies } from "next/headers"
 
@@ -71,16 +72,18 @@ const RootLayout = ({
   return (
     <html lang="ko" className={`${pretendard.className} ${tmoneyRoundWind.variable}`}>
       <body className="bg-gray-100">
-        <CountProvider>
-          <ToastProvider>
-            <QueryProviders>
-              <RouteValidationLayout initialUserToken={initialUserToken}>
-                {children}
-              </RouteValidationLayout>
-              {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
-            </QueryProviders>
-          </ToastProvider>
-        </CountProvider>
+        <SessionProvider>
+          <CountProvider>
+            <ToastProvider>
+              <QueryProviders>
+                <RouteValidationLayout initialUserToken={initialUserToken}>
+                  {children}
+                </RouteValidationLayout>
+                {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
+              </QueryProviders>
+            </ToastProvider>
+          </CountProvider>
+        </SessionProvider>
       </body>
     </html>
   )

@@ -1,10 +1,11 @@
 "use client"
 
+import { signIn, signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 import { useRef, useState } from "react"
+import { useForm } from "react-hook-form"
 
-import onLogout from "@/actions/Auths/onLogout"
 import Profile from "@/components/public/img/Profile"
 import ROUTE from "@/constants/route"
 import useOutsideClick from "@/util/useOutsideClick"
@@ -21,31 +22,28 @@ const profileMenuStyles = {
 }
 
 interface IProfileComponentProps {
-  isLoggedIn: boolean
   profileImg: string | undefined | null
 }
 
-const ProfileComponent = ({ isLoggedIn, profileImg }: IProfileComponentProps) => {
-  const router = useRouter()
-
-  const [isOpen, setIsOpen] = useState(false)
-
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  useOutsideClick(dropdownRef, () => {
-    return setIsOpen(false)
-  })
+const SignIn = () => {
+  const [isLogin, setIsLogin] = useState(false)
 
   const [{ clipPath }, api] = useSpring(() => {
     return { clipPath: "circle(0% at 0% 0%)" }
   })
 
-  if (!isLoggedIn) {
-    return (
+  const { handleSubmit, register } = useForm()
+
+  const onSubmit = handleSubmit((data) => {
+    signIn("credentials", data)
+  })
+
+  return (
+    <>
       <button
         type="button"
-        onClick={async () => {
-          await onLogout()
-          return router.push(ROUTE.SIGNIN)
+        onClick={() => {
+          setIsLogin(true)
         }}
         className="relative flex h-8 w-[80px] items-center justify-center overflow-hidden rounded-lg bg-primary text-sm font-semibold text-white md:w-[100px]"
         onMouseEnter={() => {
@@ -61,9 +59,61 @@ const ProfileComponent = ({ isLoggedIn, profileImg }: IProfileComponentProps) =>
         />
         <p className="relative z-10">로그인</p>
       </button>
-    )
-  }
 
+      {isLogin && (
+        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center">
+          <div
+            onClick={() => {
+              setIsLogin(false)
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setIsLogin(false)
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            className="absolute left-0 top-0 h-full w-full cursor-pointer bg-black/40"
+            aria-label="Close login"
+          />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-5">
+            <h1 className="text-lg">같이달램</h1>
+            <form onSubmit={onSubmit}>
+              <div>
+                <input
+                  type="text"
+                  placeholder="이메일 테스트"
+                  name={register("email").name}
+                  onChange={register("email").onChange}
+                  onBlur={register("email").onBlur}
+                  ref={register("email").ref}
+                />
+                <br />
+                <input
+                  type="password"
+                  placeholder="비밀번호 테스트"
+                  name={register("password").name}
+                  onChange={register("password").onChange}
+                  onBlur={register("password").onBlur}
+                  ref={register("password").ref}
+                />
+              </div>
+              <button type="submit">버튼</button>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
+const Login = ({ profileImg }: { profileImg: string | undefined | null }) => {
+  const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  useOutsideClick(dropdownRef, () => {
+    return setIsOpen(false)
+  })
   const handleToggle = () => {
     return setIsOpen(!isOpen)
   }
@@ -85,20 +135,32 @@ const ProfileComponent = ({ isLoggedIn, profileImg }: IProfileComponentProps) =>
           >
             마이 페이지
           </button>
-          <form
-            action={() => {
-              setIsOpen(false)
-              return onLogout()
-            }}
-            className={`${profileMenuStyles.navItems} ${profileMenuStyles.hoveredNavItem}`}
-          >
-            <button type="submit" className="h-full w-full">
+          <div className={`${profileMenuStyles.navItems} ${profileMenuStyles.hoveredNavItem}`}>
+            <button
+              type="button"
+              onClick={() => {
+                signOut()
+              }}
+              className="h-full w-full"
+            >
               로그아웃
             </button>
-          </form>
+          </div>
         </div>
       )}
     </div>
+  )
+}
+
+const ProfileComponent = ({ profileImg }: IProfileComponentProps) => {
+  const session = useSession()
+  const token = session.data?.accessToken
+
+  return (
+    <>
+      {!token && session.status !== "loading" && <SignIn />}
+      {token && <Login profileImg={profileImg} />}
+    </>
   )
 }
 
