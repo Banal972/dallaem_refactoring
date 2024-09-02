@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 
-import { memo, useCallback } from "react"
+import { useCallback } from "react"
 
 import ROUTE from "@/constants/route"
 import useGNBLogic from "@/util/useGNBLogic"
@@ -31,11 +31,10 @@ interface IGNBProps {
   children: React.ReactNode
 }
 
-const MemoizedProfileComponent = memo(ProfileComponent)
+// const MemoizedProfileComponent = memo(ProfileComponent)
 
 const GNB = ({ initialUserToken, children }: IGNBProps) => {
-  const { isOpen, is2XlScreen, isLoggedIn, profileImg, menuRef, menuIconClick } =
-    useGNBLogic(initialUserToken)
+  const { isOpen, is2XlScreen, profileImg, menuRef, menuIconClick } = useGNBLogic(initialUserToken)
 
   const menuIconClickHandler = useCallback(() => {
     menuIconClick()
@@ -54,7 +53,7 @@ const GNB = ({ initialUserToken, children }: IGNBProps) => {
           <Link href={ROUTE.HOME} className={gnbStyles.logo}>
             같이달램
           </Link>
-          <MemoizedProfileComponent isLoggedIn={isLoggedIn} profileImg={profileImg} />
+          <ProfileComponent profileImg={profileImg} />
         </div>
       </div>
       <div
@@ -66,4 +65,4 @@ const GNB = ({ initialUserToken, children }: IGNBProps) => {
   )
 }
 
-export default memo(GNB)
+export default GNB
