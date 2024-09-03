@@ -63,7 +63,7 @@ const SignUpModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>
           <Input
             name="password"
             label="비밀번호"
-            type={!isShowPassword.showPwd ? "password" : "text"}
+            type={isShowPassword.showPwd ? "text" : "password"}
             placeholder="비밀번호를 입력해주세요."
             register={register("password", { required: true, pattern: PasswordRagex })}
             errors={errors}
@@ -74,18 +74,17 @@ const SignUpModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>
                 onShowPwdHanlder("showPwd")
               }}
             >
-              {!isShowPassword.showPwd && (
-                <Image
-                  src="/icon/staticIcon/visibility_off.svg"
-                  alt="비밀번호 확인 활성화 버튼"
-                  width={20}
-                  height={14}
-                />
-              )}
-              {isShowPassword.showPwd && (
+              {isShowPassword.showPwd ? (
                 <Image
                   src="/icon/staticIcon/visibility_on.svg"
                   alt="비밀번호 확인 끄기 버튼"
+                  width={20}
+                  height={14}
+                />
+              ) : (
+                <Image
+                  src="/icon/staticIcon/visibility_off.svg"
+                  alt="비밀번호 확인 활성화 버튼"
                   width={20}
                   height={14}
                 />
@@ -95,7 +94,7 @@ const SignUpModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>
           <Input
             name="verify-password"
             label="비밀번호 확인"
-            type={!isShowPassword.verifyShowPwd ? "password" : "text"}
+            type={isShowPassword.verifyShowPwd ? "text" : "password"}
             placeholder="비밀번호를 다시 한번 입력해주세요."
             register={register("verifyPassword", { required: true })}
             errors={errors}
@@ -105,18 +104,17 @@ const SignUpModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>
                 onShowPwdHanlder("verifyShowPwd")
               }}
             >
-              {!isShowPassword.verifyShowPwd && (
-                <Image
-                  src="/icon/staticIcon/visibility_off.svg"
-                  alt="비밀번호 확인 활성화 버튼"
-                  width={20}
-                  height={14}
-                />
-              )}
-              {isShowPassword.verifyShowPwd && (
+              {isShowPassword.verifyShowPwd ? (
                 <Image
                   src="/icon/staticIcon/visibility_on.svg"
                   alt="비밀번호 확인 끄기 버튼"
+                  width={20}
+                  height={14}
+                />
+              ) : (
+                <Image
+                  src="/icon/staticIcon/visibility_off.svg"
+                  alt="비밀번호 확인 활성화 버튼"
                   width={20}
                   height={14}
                 />
