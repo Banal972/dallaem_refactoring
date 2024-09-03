@@ -7,11 +7,8 @@ import ROUTE from "@/constants/route"
 import Edit from "./img/Edit"
 
 const ProfileEditBtn = () => {
-  const router = useRouter()
+  const handleClick = useNav()
 
-  const handleClick = () => {
-    router.push(`${ROUTE.MY_PAGE}/edit`)
-  }
   return (
     <button
       onClick={handleClick}
@@ -25,3 +22,13 @@ const ProfileEditBtn = () => {
 }
 
 export default ProfileEditBtn
+
+const useNav = () => {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push(`${ROUTE.MY_PAGE}/edit`)
+  }
+
+  return handleClick
+}
