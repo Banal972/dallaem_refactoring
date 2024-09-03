@@ -49,7 +49,7 @@ const reducer = (state: IInitialState, action: IAction) => {
 const findDataFetchingKey = (state: IInitialState) => {
   return Object.entries(state).find(([key, value]) => {
     return value === true && key !== "isReviewed"
-  }) as Entries<IInitialState>
+  }) as [string, any]
 }
 
 const useTapHook = () => {
