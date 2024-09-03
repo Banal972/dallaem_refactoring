@@ -10,7 +10,7 @@ function startsWith(request: NextRequest, path: string) {
 }
 
 function toPrivateRedirect(request: NextRequest, path: string) {
-  return NextResponse.redirect(new URL(`${path}&alert=로그인 후 이용이 가능합니다.`, request.url))
+  return NextResponse.redirect(new URL(`${path}?alert=로그인 후 이용이 가능합니다.`, request.url))
 }
 
 function toPublicRedirect(request: NextRequest, path: string) {
@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
 
   if (!checkUserToken) {
     if (startsWith(request, ROUTE.SAVE_GATHERINGS) || startsWith(request, ROUTE.MY_PAGE)) {
-      return toPrivateRedirect(request, ROUTE.SIGNIN)
+      return toPrivateRedirect(request, ROUTE.HOME)
     }
   }
 

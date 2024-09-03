@@ -1,28 +1,29 @@
 "use client"
 
-import { ReadonlyURLSearchParams, usePathname, useSearchParams } from "next/navigation"
-
 import { ReactNode } from "react"
 
 import GNB from "@/components/public/gnb/GNB"
-import ROUTE from "@/constants/route"
+
+// import { ReadonlyURLSearchParams, usePathname, useSearchParams } from "next/navigation"
+
+// import ROUTE from "@/constants/route"
 
 const RouteValidationLayout = ({ children }: { children: ReactNode }) => {
-  const pathname = usePathname()
+  /* const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const shouldShowGNB = isValidRoute(pathname, searchParams)
 
   if (!shouldShowGNB) {
     return children
-  }
+  } */
 
   return <GNB>{children}</GNB>
 }
 
 export default RouteValidationLayout
 
-function isValidRoute(path: string, searchParams: ReadonlyURLSearchParams): boolean {
+/* function isValidRoute(path: string, searchParams: ReadonlyURLSearchParams): boolean {
   return Object.values(ROUTE).some((route) => {
     // '/' 경로에 대한 특별 처리
     if (route === ROUTE.HOME) {
@@ -54,4 +55,4 @@ function isValidRoute(path: string, searchParams: ReadonlyURLSearchParams): bool
     const result = path === route || path.startsWith(`${route}/`)
     return result
   })
-}
+} */

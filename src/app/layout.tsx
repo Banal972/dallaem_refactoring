@@ -5,7 +5,6 @@ import localFont from "next/font/local"
 import RouteValidationLayout from "@/components/app/RouteValidationLayout"
 import QueryProviders from "@/components/app/provider"
 import { CountProvider } from "@/provider/CountProvider"
-import ToastProvider from "@/provider/ToastProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import "./globals.css"
@@ -71,14 +70,10 @@ const RootLayout = ({
       <body className="bg-gray-100">
         <SessionProvider>
           <CountProvider>
-            <ToastProvider>
-              <QueryProviders>
-                <RouteValidationLayout>
-                  {children}
-                </RouteValidationLayout>
-                {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
-              </QueryProviders>
-            </ToastProvider>
+            <QueryProviders>
+              <RouteValidationLayout>{children}</RouteValidationLayout>
+              {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
+            </QueryProviders>
           </CountProvider>
         </SessionProvider>
       </body>
