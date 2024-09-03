@@ -1,7 +1,6 @@
 import { useReducer } from "react"
 
 import { IAction, IInitialState } from "@/types/mypage/mypage"
-import { Entries } from "type-fest"
 
 const initialState = {
   myMeeting: true,
