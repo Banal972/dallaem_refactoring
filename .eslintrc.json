@@ -79,6 +79,7 @@
         "assert": "either",
         "depth": 25
       }
-    ]
+    ],
+    "@typescript-eslint/no-use-before-define": "off"
   }
 }
