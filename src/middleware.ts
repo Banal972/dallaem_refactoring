@@ -1,6 +1,7 @@
-import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+
+import { auth } from "@/auth"
 
 import ROUTE from "./constants/route"
 
@@ -16,8 +17,8 @@ function toPublicRedirect(request: NextRequest, path: string) {
   return NextResponse.redirect(new URL(`${path}?alert=잘못된 접속 입니다.`, request.url))
 }
 
-export function middleware(request: NextRequest) {
-  const userToken = cookies().get("userToken")?.value
+export async function middleware(request: NextRequest) {
+  const userToken = await auth()
 
   const checkUserToken = !!userToken
 

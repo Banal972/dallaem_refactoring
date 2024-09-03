@@ -1,14 +1,14 @@
 "use server"
 
-import { getCookie } from "@/util/cookies"
+import { auth } from "@/auth"
 
 const cancelMeeting = async (id: string) => {
-  const token = await getCookie("userToken")
+  const session = await auth()
   try {
     const data = {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${session?.accessToken}`,
       },
     }
 

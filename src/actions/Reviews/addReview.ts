@@ -1,18 +1,18 @@
 "use server"
 
-import { cookies } from "next/headers"
-
+import { auth } from "@/auth"
 import { IErrorResponse, IUserData } from "@/types/mypage/mypage"
 
 const addReview = async (data: IUserData) => {
-  const userToken = cookies().get("userToken")?.value
+  const session = await auth()
+
   try {
     const response = await fetch(`${process.env.BASE_URL}/${process.env.TEAM_ID}/reviews`, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${session?.accessToken}`,
       },
     })
 

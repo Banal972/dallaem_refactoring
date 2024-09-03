@@ -1,7 +1,6 @@
 "use server"
 
-import { cookies } from "next/headers"
-
+import { auth } from "@/auth"
 import {
   ICustomError,
   IFetchMyPageInfo,
@@ -12,7 +11,7 @@ import {
 export const getMyMeetings = async (
   options: IFetchMyPageInfo,
 ): Promise<IGetMyPageRes[] | string> => {
-  const userToken = cookies().get("userToken")?.value
+  const session = await auth()
   const { limit, offset, reviewMeeting } = options
   const reviewed = reviewMeeting ? "&completed=true&reviewed=false" : ""
 
@@ -22,7 +21,7 @@ export const getMyMeetings = async (
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
       },
     )
@@ -37,11 +36,11 @@ export const getMyMeetings = async (
 }
 
 export const getMyReview = async ({ offset, limit }: IGetMyMeetings) => {
-  const userToken = cookies().get("userToken")?.value
+  const session = await auth()
   try {
     const userResponse = await fetch(`${process.env.BASE_URL}/${process.env.TEAM_ID}/auths/user`, {
       headers: {
-        Authorization: `Bearer ${userToken}`,
+        Authorization: `Bearer ${session?.accessToken}`,
       },
     })
     const { id } = await userResponse.json()
@@ -63,11 +62,11 @@ export const getMyOwnMeeting = async ({
   offset,
   limit,
 }: IGetMyMeetings): Promise<IGetMyPageRes[] | string> => {
-  const userToken = cookies().get("userToken")?.value
+  const session = await auth()
   try {
     const userRes = await fetch(`${process.env.BASE_URL}/${process.env.TEAM_ID}/auths/user`, {
       method: "GET",
-      headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${session?.accessToken}` },
     })
 
     const { id } = await userRes.json()
@@ -75,7 +74,7 @@ export const getMyOwnMeeting = async ({
       `${process.env.BASE_URL}/${process.env.TEAM_ID}/gatherings?createdBy=${id}&offset=${offset}&limit=${limit}`,
       {
         headers: {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${session?.accessToken}`,
         },
       },
     )
