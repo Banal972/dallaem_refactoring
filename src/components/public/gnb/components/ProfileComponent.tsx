@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
+import SignUpModal from "@/components/pages/auth/SignUpModal/SignUpModal"
 import Profile from "@/components/public/img/Profile"
 import ROUTE from "@/constants/route"
 import useOutsideClick from "@/util/useOutsideClick"
@@ -103,6 +104,8 @@ const SignIn = () => {
           </div>
         </div>
       )}
+
+      <SignUpModal />
     </>
   )
 }
