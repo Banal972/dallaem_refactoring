@@ -1,15 +1,12 @@
 "use client"
 
-import { ReactNode } from "react"
-
-import GNB from "@/components/public/gnb/GNB"
-
 // import { ReadonlyURLSearchParams, usePathname, useSearchParams } from "next/navigation"
-
+import GNB from "@/components/public/gnb/GNB"
 // import ROUTE from "@/constants/route"
+import { IAuthLayoutProps } from "@/types/auth/auth"
 
-const RouteValidationLayout = ({ children }: { children: ReactNode }) => {
-  /* const pathname = usePathname()
+const RouteValidationLayout = ({ children }: IAuthLayoutProps) => {
+  /*   const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const shouldShowGNB = isValidRoute(pathname, searchParams)
@@ -55,4 +52,5 @@ export default RouteValidationLayout
     const result = path === route || path.startsWith(`${route}/`)
     return result
   })
-} */
+}
+ */

@@ -18,10 +18,11 @@ interface IProfileComponentProps {
 const ProfileComponent = ({ profileImg }: IProfileComponentProps) => {
   const session = useSession()
   const token = session.data?.accessToken
+  const isNotToken = !token && session.status !== "loading"
 
   return (
     <>
-      {!token && session.status !== "loading" && <SignIn />}
+      {isNotToken && <SignIn />}
       {token && <Login profileImg={profileImg} />}
     </>
   )
