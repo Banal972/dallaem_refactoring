@@ -61,6 +61,8 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
 
   const dataPages = data?.pages ?? []
 
+  const isDataEmpty = !isPending && dataPages[0]?.data.length === 0
+
   if (isPending) {
     if (dataFetchingKey === "myReview") {
       return <SkeletonWrapper component={<ReviewSkeleton />} />
@@ -68,7 +70,7 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
     return <SkeletonWrapper component={<CardSkeleton />} />
   }
 
-  if (!isPending && dataPages[0]?.data.length === 0) {
+  if (isDataEmpty) {
     return (
       <MyPageDefault
         dataFetchingKey={dataFetchingKey}
