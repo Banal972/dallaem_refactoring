@@ -3,6 +3,7 @@
 import { Fragment, MouseEvent, useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 
+import cancelMeeting from "@/actions/Gatherings/cancelMeeting"
 import { fetchMyPageInfo } from "@/actions/Gatherings/fetchMyPageInfo"
 import CardBtn from "@/components/public/Card/Atom/CardBtn"
 import Card from "@/components/public/Card/Card"
@@ -20,32 +21,33 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 
 import MyPageDefault from "./MyPageDefault"
 import ReviewStateButton from "./ReviewStateButton"
+import SkeletonWrapper from "./SkeletonWrapper"
 
 const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfoWrapperProps) => {
-  const isMyOwnMeeting = dataFetchingKey === "myOwnMeeting"
-  const isMyReview = dataFetchingKey === "myReview"
   const { goPath } = useNav()
-  const [hasReview, setHasReview] = useState(isReviewed)
+  const { hasReview, reviewButtonHandler } = useReviewState(isReviewed)
   const { ref, inView } = useInView({
     threshold: 1,
   })
 
+  const isMyOwnMeeting = dataFetchingKey === "myOwnMeeting"
+  const isMyReview = dataFetchingKey === "myReview"
   let dataSort: IDataSort = { dataFetchingKey }
 
   if (hasReview) {
     dataSort = { ...dataSort, isReviewed: true }
   }
 
-  const { data, isPending, fetchNextPage, isFetchingNextPage } = useInfiniteQueryHook(dataSort)
-
-  const reviewButtonHandler = (value: boolean) => {
-    setHasReview(value)
+  if (!hasReview) {
+    delete dataSort.isReviewed
   }
+
+  const { data, isPending, fetchNextPage, isFetchingNextPage } = useInfiniteQueryHook(dataSort)
 
   const clickViewReviewHandler = (e: MouseEvent) => {
     e.preventDefault()
     onClick({ type: "myReview", isReviewed: true })
-    setHasReview(true)
+    reviewButtonHandler(true)
   }
 
   const clickCreateReviewHandler = (e: MouseEvent, pathId: number) => {
@@ -61,31 +63,9 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
 
   if (isPending) {
     if (dataFetchingKey === "myReview") {
-      return (
-        <div className="flex flex-col gap-4">
-          {new Array(LIMIT)
-            .fill(0)
-            .map((_, i) => {
-              return i + 1
-            })
-            .map((number) => {
-              return <ReviewSkeleton key={number} />
-            })}
-        </div>
-      )
+      return <SkeletonWrapper component={<ReviewSkeleton />} />
     }
-    return (
-      <div className="flex flex-col gap-4">
-        {new Array(LIMIT)
-          .fill(0)
-          .map((_, i) => {
-            return i + 1
-          })
-          .map((number) => {
-            return <CardSkeleton key={number} />
-          })}
-      </div>
-    )
+    return <SkeletonWrapper component={<CardSkeleton />} />
   }
 
   if (!isPending && dataPages[0]?.data.length === 0) {
@@ -142,23 +122,26 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
                       image={item.image}
                       capacity={item.capacity}
                     >
-                      {isCurrentDateAfter(item.registrationEnd) && !item.isReviewed && (
+                      {isCurrentDateAfter(item.registrationEnd) ? (
                         <CardBtn
                           type="active"
-                          onClick={(e: MouseEvent) => {
-                            clickCreateReviewHandler(e, item.id)
+                          onClick={
+                            item.isReviewed
+                              ? clickViewReviewHandler
+                              : (e: MouseEvent) => {
+                                  clickCreateReviewHandler(e, item.id)
+                                }
+                          }
+                        >
+                          {item.isReviewed ? "내가 쓴 리뷰 보기" : "리뷰 작성하기"}
+                        </CardBtn>
+                      ) : (
+                        <CardBtn
+                          type="outline"
+                          onClick={() => {
+                            return cancelMeeting(String(item.id))
                           }}
                         >
-                          리뷰 작성하기
-                        </CardBtn>
-                      )}
-                      {isCurrentDateAfter(item.registrationEnd) && item.isReviewed && (
-                        <CardBtn type="active" onClick={clickViewReviewHandler}>
-                          내가 쓴 리뷰 보기
-                        </CardBtn>
-                      )}
-                      {!isCurrentDateAfter(item.registrationEnd) && (
-                        <CardBtn type="outline" onClick={() => {}}>
                           예약 취소하기
                         </CardBtn>
                       )}
@@ -197,4 +180,14 @@ const useInfiniteQueryHook = (keyData: IDataSort) => {
   })
 
   return { data, isPending, fetchNextPage, isFetchingNextPage }
+}
+
+const useReviewState = (isReviewed: boolean | undefined) => {
+  const [hasReview, setHasReview] = useState(isReviewed)
+
+  const reviewButtonHandler = (value: boolean) => {
+    setHasReview(value)
+  }
+
+  return { hasReview, reviewButtonHandler }
 }
