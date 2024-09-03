@@ -1,12 +1,10 @@
 import type { Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
 import localFont from "next/font/local"
-import { cookies } from "next/headers"
 
 import RouteValidationLayout from "@/components/app/RouteValidationLayout"
 import QueryProviders from "@/components/app/provider"
 import { CountProvider } from "@/provider/CountProvider"
-import ToastProvider from "@/provider/ToastProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import "./globals.css"
@@ -67,21 +65,15 @@ const RootLayout = ({
 }: Readonly<{
   children: React.ReactNode
 }>) => {
-  const cookieStore = cookies()
-  const initialUserToken = cookieStore.get("userToken")?.value
   return (
     <html lang="ko" className={`${pretendard.className} ${tmoneyRoundWind.variable}`}>
       <body className="bg-gray-100">
         <SessionProvider>
           <CountProvider>
-            <ToastProvider>
-              <QueryProviders>
-                <RouteValidationLayout initialUserToken={initialUserToken}>
-                  {children}
-                </RouteValidationLayout>
-                {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
-              </QueryProviders>
-            </ToastProvider>
+            <QueryProviders>
+              <RouteValidationLayout>{children}</RouteValidationLayout>
+              {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
+            </QueryProviders>
           </CountProvider>
         </SessionProvider>
       </body>

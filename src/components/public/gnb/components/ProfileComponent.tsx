@@ -1,42 +1,41 @@
 "use client"
 
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 import { useRef, useState } from "react"
-import { useForm } from "react-hook-form"
 
+import LoginModal from "@/components/pages/auth/LoginModal"
 import SignUpModal from "@/components/pages/auth/SignUpModal/SignUpModal"
 import Profile from "@/components/public/img/Profile"
 import ROUTE from "@/constants/route"
 import useOutsideClick from "@/util/useOutsideClick"
 import { animated, useSpring } from "@react-spring/web"
 
-// 테일윈드 스타일
-const profileStyles = "w-[40px] h-[40px]"
-
-const profileMenuStyles = {
-  container:
-    "absolute right-0 top-[62px] flex h-[70px] w-[150px] flex-col rounded-lg bg-white shadow-xl md:top-[66px]",
-  navItems: "flex h-1/2 w-full items-center justify-center rounded-lg text-center text-orange-600",
-  hoveredNavItem: "transition-all ease-in-out transform delay-[10ms] duration-150",
-}
-
 interface IProfileComponentProps {
   profileImg: string | undefined | null
 }
+
+const ProfileComponent = ({ profileImg }: IProfileComponentProps) => {
+  const session = useSession()
+  const token = session.data?.accessToken
+  const isNotToken = !token && session.status !== "loading"
+
+  return (
+    <>
+      {isNotToken && <SignIn />}
+      {token && <Login profileImg={profileImg} />}
+    </>
+  )
+}
+
+export default ProfileComponent
 
 const SignIn = () => {
   const [isLogin, setIsLogin] = useState(false)
 
   const [{ clipPath }, api] = useSpring(() => {
     return { clipPath: "circle(0% at 0% 0%)" }
-  })
-
-  const { handleSubmit, register } = useForm()
-
-  const onSubmit = handleSubmit((data) => {
-    signIn("credentials", data)
   })
 
   return (
@@ -61,51 +60,8 @@ const SignIn = () => {
         <p className="relative z-10">로그인</p>
       </button>
 
-      {isLogin && (
-        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center">
-          <div
-            onClick={() => {
-              setIsLogin(false)
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                setIsLogin(false)
-              }
-            }}
-            role="button"
-            tabIndex={0}
-            className="absolute left-0 top-0 h-full w-full cursor-pointer bg-black/40"
-            aria-label="Close login"
-          />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-5">
-            <h1 className="text-lg">같이달램</h1>
-            <form onSubmit={onSubmit}>
-              <div>
-                <input
-                  type="text"
-                  placeholder="이메일 테스트"
-                  name={register("email").name}
-                  onChange={register("email").onChange}
-                  onBlur={register("email").onBlur}
-                  ref={register("email").ref}
-                />
-                <br />
-                <input
-                  type="password"
-                  placeholder="비밀번호 테스트"
-                  name={register("password").name}
-                  onChange={register("password").onChange}
-                  onBlur={register("password").onBlur}
-                  ref={register("password").ref}
-                />
-              </div>
-              <button type="submit">버튼</button>
-            </form>
-          </div>
-        </div>
-      )}
-
       <SignUpModal />
+      <LoginModal isLogin={isLogin} setIsLogin={setIsLogin} />
     </>
   )
 }
@@ -124,13 +80,14 @@ const Login = ({ profileImg }: { profileImg: string | undefined | null }) => {
   return (
     <div ref={dropdownRef} className="mt-1 md:mt-2">
       <button type="button" onClick={handleToggle} aria-label="프로필 메뉴 열기">
-        <Profile state="largeDefault" className={profileStyles} profileImg={profileImg} />
+        <Profile state="largeDefault" className="h-[40px] w-[40px]" profileImg={profileImg} />
       </button>
+
       {isOpen && (
-        <div className={profileMenuStyles.container}>
+        <div className="absolute right-0 top-[62px] flex h-[70px] w-[150px] flex-col rounded-lg bg-white shadow-xl md:top-[66px]">
           <button
             type="button"
-            className={`${profileMenuStyles.navItems} ${profileMenuStyles.hoveredNavItem}`}
+            className="flex h-1/2 w-full transform items-center justify-center rounded-lg text-center text-orange-600 transition-all delay-[10ms] duration-150 ease-in-out"
             onClick={() => {
               setIsOpen(false)
               return router.push(ROUTE.MY_PAGE)
@@ -138,7 +95,8 @@ const Login = ({ profileImg }: { profileImg: string | undefined | null }) => {
           >
             마이 페이지
           </button>
-          <div className={`${profileMenuStyles.navItems} ${profileMenuStyles.hoveredNavItem}`}>
+
+          <div className="flex h-1/2 w-full transform items-center justify-center rounded-lg text-center text-orange-600 transition-all delay-[10ms] duration-150 ease-in-out">
             <button
               type="button"
               onClick={() => {
@@ -154,17 +112,3 @@ const Login = ({ profileImg }: { profileImg: string | undefined | null }) => {
     </div>
   )
 }
-
-const ProfileComponent = ({ profileImg }: IProfileComponentProps) => {
-  const session = useSession()
-  const token = session.data?.accessToken
-
-  return (
-    <>
-      {!token && session.status !== "loading" && <SignIn />}
-      {token && <Login profileImg={profileImg} />}
-    </>
-  )
-}
-
-export default ProfileComponent
