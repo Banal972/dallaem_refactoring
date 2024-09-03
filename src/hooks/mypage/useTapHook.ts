@@ -1,6 +1,7 @@
 import { useReducer } from "react"
 
 import { IAction, IInitialState } from "@/types/mypage/mypage"
+import { Entries } from "type-fest"
 
 const initialState = {
   myMeeting: true,
@@ -45,11 +46,15 @@ const reducer = (state: IInitialState, action: IAction) => {
   }
 }
 
+const findDataFetchingKey = (state: IInitialState) => {
+  return Object.entries(state).find(([key, value]) => {
+    return value === true && key !== "isReviewed"
+  }) as Entries<IInitialState>
+}
+
 const useTapHook = () => {
   const [tapState, dispatch] = useReducer(reducer, initialState)
-  const [dataFetchingKey] = (Object.entries(tapState) as [string, any]).find((state) => {
-    return state[1] === true && state[0] !== "isReviewed"
-  })
+  const [dataFetchingKey] = findDataFetchingKey(tapState)
 
   return { tapState, dispatch, dataFetchingKey }
 }
