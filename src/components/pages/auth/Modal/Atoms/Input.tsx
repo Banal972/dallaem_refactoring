@@ -22,6 +22,10 @@ const Input = ({
   errors,
   patternMessage,
 }: InputProps) => {
+  const requiredError = errors && errors[name]?.type === "required"
+  const patternError = errors && errors[name]?.type === "pattern"
+  const isError = errors && errors[name]
+
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={name} className="text-sm font-semibold">
@@ -30,7 +34,7 @@ const Input = ({
       <div className="relative">
         <input
           type={type}
-          className="h-10 w-full rounded-lg bg-gray-200 px-4 outline-none"
+          className={`h-10 w-full rounded-lg bg-gray-200 px-4 outline-none ${isError && "border border-red-500"}`}
           id={name}
           placeholder={placeholder}
           // eslint-disable-next-line react/jsx-props-no-spreading
@@ -38,12 +42,10 @@ const Input = ({
         />
         {children}
       </div>
-      {errors && errors[name]?.type === "required" && (
+      {requiredError && (
         <p className="text-sm font-semibold text-red-500">{label}을 입력해주세요</p>
       )}
-      {errors && errors[name]?.type === "pattern" && (
-        <p className="text-sm font-semibold text-red-500">{patternMessage}</p>
-      )}
+      {patternError && <p className="text-sm font-semibold text-red-500">{patternMessage}</p>}
     </div>
   )
 }
