@@ -45,10 +45,17 @@ const reducer = (state: IInitialState, action: IAction) => {
   }
 }
 
+const findDataFetchingKey = (state: IInitialState) => {
+  return Object.entries(state).find(([key, value]) => {
+    return value === true && key !== "isReviewed"
+  }) as [string, any]
+}
+
 const useTapHook = () => {
   const [tapState, dispatch] = useReducer(reducer, initialState)
+  const [dataFetchingKey] = findDataFetchingKey(tapState)
 
-  return { tapState, dispatch }
+  return { tapState, dispatch, dataFetchingKey }
 }
 
 export default useTapHook
