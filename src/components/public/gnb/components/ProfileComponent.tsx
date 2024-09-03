@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 
 import { useRef, useState } from "react"
 
-import LoginModal from "@/components/pages/auth/LoginModal"
+import AuthModal from "@/components/pages/auth/AuthModal"
 import Profile from "@/components/public/img/Profile"
 import ROUTE from "@/constants/route"
 import useOutsideClick from "@/util/useOutsideClick"
@@ -58,8 +58,7 @@ const SignIn = () => {
         />
         <p className="relative z-10">로그인</p>
       </button>
-
-      <LoginModal isLogin={isLogin} setIsLogin={setIsLogin} />
+      <AuthModal isLogin={isLogin} setIsLogin={setIsLogin} />
     </>
   )
 }
