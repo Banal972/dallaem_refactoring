@@ -1,7 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-
 import { Fragment, MouseEvent, useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 
@@ -15,6 +13,7 @@ import ReviewSkeleton from "@/components/public/Skeleton/ReviewSkeleton"
 import Spinner from "@/components/public/Spinner/Spinner"
 import LIMIT from "@/constants/limit"
 import ROUTE from "@/constants/route"
+import useNav from "@/hooks/useNav"
 import { IDataSort, IGetMyPageRes, IMyPageInfoWrapperProps, IReview } from "@/types/mypage/mypage"
 import { isCurrentDateAfter } from "@/util/days"
 import { useInfiniteQuery } from "@tanstack/react-query"
@@ -22,32 +21,10 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import MyPageDefault from "./MyPageDefault"
 import ReviewStateButton from "./ReviewStateButton"
 
-const useInfiniteQueryHook = (keyData: IDataSort) => {
-  const { data, isPending, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["mypage", keyData],
-    queryFn: ({ queryKey, pageParam }) => {
-      const querySort = queryKey[1] as IDataSort
-      const fetchingKey = querySort.dataFetchingKey
-      const isReviewed = querySort.isReviewed ?? null
-      const offset = pageParam * LIMIT
-      const limit = LIMIT
-      return fetchMyPageInfo({ fetchingKey, offset, limit, isReviewed })
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, _, lastPageParam) => {
-      return lastPage?.hasMore ? lastPageParam + 1 : undefined
-    },
-    staleTime: 1000,
-    gcTime: 1000,
-  })
-
-  return { data, isPending, fetchNextPage, isFetchingNextPage }
-}
-
 const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfoWrapperProps) => {
   const isMyOwnMeeting = dataFetchingKey === "myOwnMeeting"
   const isMyReview = dataFetchingKey === "myReview"
-  const router = useRouter()
+  const { goPath } = useNav()
   const [hasReview, setHasReview] = useState(isReviewed)
   const { ref, inView } = useInView({
     threshold: 1,
@@ -73,7 +50,7 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
 
   const clickCreateReviewHandler = (e: MouseEvent, pathId: number) => {
     e.preventDefault()
-    router.push(`${ROUTE.MY_PAGE}/addReview?gatheringId=${pathId}`)
+    goPath(`${ROUTE.MY_PAGE}/addReview?gatheringId=${pathId}`)
   }
 
   useEffect(() => {
@@ -199,3 +176,25 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
 }
 
 export default MyPageInfoWrapper
+
+const useInfiniteQueryHook = (keyData: IDataSort) => {
+  const { data, isPending, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["mypage", keyData],
+    queryFn: ({ queryKey, pageParam }) => {
+      const querySort = queryKey[1] as IDataSort
+      const fetchingKey = querySort.dataFetchingKey
+      const isReviewed = querySort.isReviewed ?? null
+      const offset = pageParam * LIMIT
+      const limit = LIMIT
+      return fetchMyPageInfo({ fetchingKey, offset, limit, isReviewed })
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage?.hasMore ? lastPageParam + 1 : undefined
+    },
+    staleTime: 1000,
+    gcTime: 1000,
+  })
+
+  return { data, isPending, fetchNextPage, isFetchingNextPage }
+}
