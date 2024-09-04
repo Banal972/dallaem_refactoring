@@ -1,10 +1,13 @@
 import { useMemo } from "react"
 
+import getScoreReview from "@/actions/Reviews/getScoreReview"
 import {
   IReviewScoreReturn,
   TReviewScoreRatings,
+  TScoresType,
   TuseScoreCalculation,
 } from "@/types/review/review"
+import { useQuery } from "@tanstack/react-query"
 
 const reviewSum = (score: number[]) => {
   return score.reduce((ac, cur) => {
@@ -41,7 +44,14 @@ const calculation = (score: number[]): IReviewScoreReturn => {
   }
 }
 
-const useScoreCalculation = (scoreData: TuseScoreCalculation) => {
+const useScoreCalculation = (filter: TScoresType) => {
+  const { data: scoreData } = useQuery({
+    queryKey: ["scores", filter],
+    queryFn: () => {
+      return getScoreReview(filter)
+    },
+  })
+
   return useMemo(() => {
     if (!scoreData || scoreData.length === 0) {
       return { allScore: 0, maxScore: 0, ratings: [] }
