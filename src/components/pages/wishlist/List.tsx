@@ -133,6 +133,7 @@ const List = () => {
           </div>
         )}
       </div>
+
       <ResetFilter
         isVisible={Object.entries(filterOptions).toString() !== Object.entries(filter).toString()}
         onClick={resetFilterHandler}

@@ -83,7 +83,6 @@ const useWishList = (filter: IFilterOption) => {
   }, [page, filterAndSort])
 
   useEffect(() => {
-    // Initial fetch
     setIsPending(false)
     const storage = JSON.parse(localStorage.getItem("wishlist") || "[]")
     const newItems = filterAndSort(storage).slice(0, 10)
