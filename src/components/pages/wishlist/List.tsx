@@ -27,9 +27,10 @@ const List = () => {
     sortOrder: "desc",
   }
 
-  const [filter, setFilter] = useState<IFilterOption>(filterOptions)
+  const { filter, onFilterChanged, onSortOrderHandler, resetFilterHandler } =
+    useFilter(filterOptions)
 
-  const { wish, setWish, ref, isLoading, hasMore } = useWishList(filter)
+  const { wish, setWish, ref, isPending, hasMore } = useWishList(filter)
 
   const removeWishHandler = (id: number) => {
     setWish(
@@ -39,54 +40,7 @@ const List = () => {
     )
   }
 
-  const resetFilterHandler = () => {
-    setFilter({
-      type: "DALLAEMFIT",
-      sortBy: "registrationEnd",
-      sortOrder: "desc",
-    })
-  }
-
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
-  }
-
-  const onSortOrderHandler = () => {
-    if (filter.sortOrder === "desc") {
-      return setFilter((prev) => {
-        return {
-          ...prev,
-          sortOrder: "asc",
-        }
-      })
-    }
-    return setFilter((prev) => {
-      return {
-        ...prev,
-        sortOrder: "desc",
-      }
-    })
-  }
+  const IsHasMore = hasMore && !isPending
 
   return (
     <>
@@ -140,13 +94,15 @@ const List = () => {
           </div>
         </div>
 
-        {isLoading ? (
+        {isPending && (
           <div className="mt-6 flex-1">
             {new Array(10).fill(0).map((_, index) => {
               return <MeetingCardSkeleton key={`${index + 1}`} />
             })}
           </div>
-        ) : (
+        )}
+
+        {!isPending && (
           <div className={`mt-6 flex-1 ${wish.length === 0 && "flex items-center justify-center"}`}>
             {wish.length === 0 && (
               <p className="text-sm font-medium leading-5 text-gray-500">아직 찜한 모임이 없어요</p>
@@ -171,7 +127,7 @@ const List = () => {
           </div>
         )}
 
-        {hasMore && !isLoading && (
+        {IsHasMore && (
           <div ref={ref} className="w-full">
             <Spinner />
           </div>
@@ -186,3 +142,58 @@ const List = () => {
 }
 
 export default List
+
+const useFilter = (filterOptions: IFilterOption) => {
+  const [filter, setFilter] = useState(filterOptions)
+
+  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
+    if (key) {
+      if (typeof e === "string") {
+        if (e === "") {
+          if (key in filter) {
+            const newFilterOption = { ...filter }
+            // @ts-ignore
+            delete newFilterOption[key]
+            setFilter(newFilterOption)
+          }
+        } else {
+          setFilter({ ...filter, [key]: e })
+        }
+      } else {
+        const target = e.target as HTMLButtonElement
+        if (target.value) setFilter({ ...filter, [key]: target.value })
+        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
+          const targetParent = target.parentElement as HTMLButtonElement
+          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
+        }
+      }
+    }
+  }
+
+  const onSortOrderHandler = () => {
+    if (filter.sortOrder === "desc") {
+      return setFilter((prev) => {
+        return {
+          ...prev,
+          sortOrder: "asc",
+        }
+      })
+    }
+    return setFilter((prev) => {
+      return {
+        ...prev,
+        sortOrder: "desc",
+      }
+    })
+  }
+
+  const resetFilterHandler = () => {
+    setFilter({
+      type: "DALLAEMFIT",
+      sortBy: "registrationEnd",
+      sortOrder: "desc",
+    })
+  }
+
+  return { filter, onFilterChanged, onSortOrderHandler, resetFilterHandler }
+}
