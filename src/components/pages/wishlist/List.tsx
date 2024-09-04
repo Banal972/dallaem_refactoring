@@ -17,8 +17,9 @@ import Sort from "@/components/public/icon/dynamicIcon/Sort"
 import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import useWishList from "@/hooks/useWishList"
-import { IFilterOption, TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
+import { IFilterOption } from "@/types/findMeeting/findMeeting"
 import { isCurrentDateAfter } from "@/util/days"
+import onFilterChanged from "@/util/onFilterChanged"
 
 const List = () => {
   const filterOptions: IFilterOption = {
@@ -27,7 +28,7 @@ const List = () => {
     sortOrder: "desc",
   }
 
-  const { filter, onFilterChanged, onSortOrderHandler, resetFilterHandler } =
+  const { filter, onSortOrderHandler, updateFilterOption, resetFilterHandler } =
     useFilter(filterOptions)
 
   const { wish, setWish, ref, isPending, hasMore } = useWishList(filter)
@@ -49,7 +50,7 @@ const List = () => {
           <FilterTab
             selVal={filter.type}
             onSelect={(e) => {
-              onFilterChanged(e, "type")
+              onFilterChanged(e, "type", filter, updateFilterOption)
             }}
           />
         </div>
@@ -60,7 +61,7 @@ const List = () => {
               data={location}
               placeholder="지역 선택"
               onSelect={(e) => {
-                onFilterChanged(e, "location")
+                onFilterChanged(e, "location", filter, updateFilterOption)
               }}
               selVal={filter.location}
             />
@@ -68,7 +69,7 @@ const List = () => {
               placeholder="날짜 선택"
               selVal={filter.date}
               onChange={(e) => {
-                onFilterChanged(e, "date")
+                onFilterChanged(e, "date", filter, updateFilterOption)
               }}
             />
           </div>
@@ -87,7 +88,7 @@ const List = () => {
             </button>
             <FilterSort
               onSelect={(e) => {
-                onFilterChanged(e, "sortBy")
+                onFilterChanged(e, "sortBy", filter, updateFilterOption)
               }}
               selVal={filter.sortBy}
             />
@@ -147,28 +148,10 @@ export default List
 const useFilter = (filterOptions: IFilterOption) => {
   const [filter, setFilter] = useState(filterOptions)
 
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
+  const updateFilterOption = (newOption: Partial<IFilterOption>) => {
+    setFilter((prevOption) => {
+      return { ...prevOption, ...newOption }
+    })
   }
 
   const onSortOrderHandler = () => {
@@ -196,5 +179,5 @@ const useFilter = (filterOptions: IFilterOption) => {
     })
   }
 
-  return { filter, onFilterChanged, onSortOrderHandler, resetFilterHandler }
+  return { filter, onSortOrderHandler, updateFilterOption, resetFilterHandler }
 }

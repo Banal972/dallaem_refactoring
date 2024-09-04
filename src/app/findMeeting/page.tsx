@@ -20,7 +20,8 @@ import LIMIT from "@/constants/limit"
 import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import useGetMeetingList from "@/hooks/useGetMeetingList"
-import { IFilterOption, TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
+import { IFilterOption } from "@/types/findMeeting/findMeeting"
+import onFilterChanged from "@/util/onFilterChanged"
 import headClassIMG from "@public/img/head_class.png"
 
 const FindMeeting = () => {
@@ -47,28 +48,6 @@ const FindMeeting = () => {
   const { ref, inView } = useInView()
 
   const router = useRouter()
-
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          const newFilterOption = { ...filterOption }
-          // @ts-ignore
-          delete newFilterOption[key]
-          updateFilterOption(newFilterOption)
-        } else {
-          updateFilterOption({ [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) updateFilterOption({ [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) updateFilterOption({ [key]: targetParent.value })
-        }
-      }
-    }
-  }
 
   const onClickCreateMeeting = async () => {
     if (await checkLogin()) setIsMeetingModal(!isMeetingModal)
@@ -102,7 +81,7 @@ const FindMeeting = () => {
           <FilterTab
             selVal={filterOption.type}
             onSelect={(e) => {
-              onFilterChanged(e, "type")
+              onFilterChanged(e, "type", filterOption, updateFilterOption)
             }}
           />
           <button
@@ -120,7 +99,7 @@ const FindMeeting = () => {
               data={location}
               placeholder="지역 선택"
               onSelect={(e) => {
-                onFilterChanged(e, "location")
+                onFilterChanged(e, "location", filterOption, updateFilterOption)
               }}
               selVal={filterOption.location}
             />
@@ -128,7 +107,7 @@ const FindMeeting = () => {
               placeholder="날짜 선택"
               selVal={filterOption.date}
               onChange={(e) => {
-                onFilterChanged(e, "date")
+                onFilterChanged(e, "date", filterOption, updateFilterOption)
               }}
             />
           </div>
@@ -156,7 +135,7 @@ const FindMeeting = () => {
             </button>
             <FilterSort
               onSelect={(e) => {
-                onFilterChanged(e, "sortBy")
+                onFilterChanged(e, "sortBy", filterOption, updateFilterOption)
               }}
               selVal={filterOption.sortBy}
             />
