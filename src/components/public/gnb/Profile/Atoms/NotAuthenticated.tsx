@@ -6,7 +6,7 @@ import AuthModal from "@/components/pages/auth/AuthModal"
 import { animated, useSpring } from "@react-spring/web"
 
 const NotAuthenticated = () => {
-  const [isLogin, setIsLogin] = useState(false)
+  const { isLogin, openLoginHandler, closeLoginHandler } = useLoginState()
 
   const [{ clipPath }, api] = useSpring(() => {
     return { clipPath: "circle(0% at 0% 0%)" }
@@ -17,9 +17,7 @@ const NotAuthenticated = () => {
       <button
         type="button"
         className="relative flex h-8 w-[80px] items-center justify-center overflow-hidden rounded-lg bg-primary text-sm font-semibold text-white md:w-[100px]"
-        onClick={() => {
-          setIsLogin(true)
-        }}
+        onClick={openLoginHandler}
         onMouseEnter={() => {
           return api({ clipPath: "circle(150% at 0% 0%)" })
         }}
@@ -34,9 +32,23 @@ const NotAuthenticated = () => {
         <p className="relative z-10">로그인</p>
       </button>
 
-      <AuthModal isLogin={isLogin} setIsLogin={setIsLogin} />
+      <AuthModal isLogin={isLogin} closeLoginHandler={closeLoginHandler} />
     </>
   )
 }
 
 export default NotAuthenticated
+
+const useLoginState = () => {
+  const [isLogin, setIsLogin] = useState(false)
+
+  const openLoginHandler = () => {
+    setIsLogin(true)
+  }
+
+  const closeLoginHandler = () => {
+    setIsLogin(false)
+  }
+
+  return { isLogin, openLoginHandler, closeLoginHandler }
+}

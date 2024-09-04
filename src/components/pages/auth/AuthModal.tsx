@@ -1,6 +1,6 @@
 "use client"
 
-import { Dispatch, SetStateAction, useState } from "react"
+import { useState } from "react"
 
 import CompleteSignUpModal from "@/components/pages/auth/Modal/CompleteSignUpModal"
 import LoginModal from "@/components/pages/auth/Modal/LoginModal"
@@ -9,10 +9,10 @@ import { animated, useChain, useSpring, useSpringRef, useTransition } from "@rea
 
 interface IAuthModal {
   isLogin: boolean
-  setIsLogin: Dispatch<SetStateAction<boolean>>
+  closeLoginHandler: () => void
 }
 
-const AuthModal = ({ isLogin, setIsLogin }: IAuthModal) => {
+const AuthModal = ({ isLogin, closeLoginHandler }: IAuthModal) => {
   const [isStep, setIsStep] = useState(0)
 
   const transitionsRef = useSpringRef()
@@ -41,12 +41,10 @@ const AuthModal = ({ isLogin, setIsLogin }: IAuthModal) => {
         <div className="fixed left-0 top-0 z-[9999] flex h-full w-full items-center justify-center text-base">
           <animated.div
             style={style}
-            onClick={() => {
-              setIsLogin(false)
-            }}
+            onClick={closeLoginHandler}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                setIsLogin(false)
+                closeLoginHandler()
               }
             }}
             className="absolute left-0 top-0 h-full w-full cursor-pointer bg-black/40 backdrop-blur-sm"
