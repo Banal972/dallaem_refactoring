@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import RatingBar from "@/components/pages/allReview/Scores/Atoms/RatingBar"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
@@ -66,14 +66,22 @@ const Scores = () => {
 export default Scores
 
 const useSpringScore = (allScore: string | number) => {
-  const style = useSpring({
-    from: {
-      clipPath: "inset(0 100% 0 0)",
-    },
-    to: {
-      clipPath: `inset(0 ${100 - (Number(allScore) / 5) * 100}% 0 0)`,
-    },
+  const [style, api] = useSpring(() => {
+    return {
+      from: {
+        clipPath: "inset(0 100% 0 0)",
+      },
+      to: {
+        clipPath: "inset(0 100% 0 0)",
+      },
+    }
   })
+
+  useEffect(() => {
+    api.start({
+      to: { clipPath: `inset(0 ${100 - (Number(allScore) / 5) * 100}% 0 0)` },
+    })
+  }, [api, allScore])
 
   return style
 }
