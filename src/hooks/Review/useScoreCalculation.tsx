@@ -1,5 +1,3 @@
-import { useMemo } from "react"
-
 import getScoreReview from "@/actions/Reviews/getScoreReview"
 import {
   IReviewScoreReturn,
@@ -17,13 +15,12 @@ const useScoreCalculation = (filter: TScoresType) => {
     },
   })
 
-  return useMemo(() => {
-    if (!scoreData || scoreData.length === 0) {
-      return { allScore: 0, maxScore: 0, ratings: [] }
-    }
-    const { oneStar, twoStars, threeStars, fourStars, fiveStars } = sumScoreData(scoreData)
-    return calculation([oneStar, twoStars, threeStars, fourStars, fiveStars])
-  }, [scoreData])
+  if (!scoreData || scoreData.length === 0) {
+    return { allScore: 0, maxScore: 0, ratings: [] }
+  }
+  const { oneStar, twoStars, threeStars, fourStars, fiveStars } = sumScoreData(scoreData)
+
+  return calculation([oneStar, twoStars, threeStars, fourStars, fiveStars])
 }
 
 export default useScoreCalculation
