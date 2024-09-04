@@ -24,41 +24,14 @@ const List = () => {
     sortOrder: "desc",
   }
 
-  const [filter, setFilter] = useState<TReviewFilterOptions>(filterOptions)
+  const { filter, onFilterChanged, resetFilterHandler } = useFilter(filterOptions)
+
   const { ref, inView } = useInView({ threshold: 1 })
 
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
-  }
-
-  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useAllReview(filter)
-
-  const resetFilterHandler = () => {
-    setFilter(filterOptions)
-  }
+  const { data, isPending, hasNextPage, isFetchingNextPage, fetchNextPage } = useAllReview(filter)
 
   const render = () => {
-    if (isLoading) {
+    if (isPending) {
       return new Array(LIMIT).fill(0).map((_, index) => {
         return <ReviewSkeleton key={`${index + 1}`} />
       })
@@ -122,7 +95,7 @@ const List = () => {
       </div>
 
       <div
-        className={`mt-6 flex flex-1 flex-col gap-6 text-sm font-medium leading-5 text-gray-500 ${!isLoading && data.length === 0 && "items-center justify-center"}`}
+        className={`mt-6 flex flex-1 flex-col gap-6 text-sm font-medium leading-5 text-gray-500 ${!isPending && data.length === 0 && "items-center justify-center"}`}
       >
         {render()}
       </div>
@@ -144,3 +117,37 @@ const List = () => {
 }
 
 export default List
+
+const useFilter = (filterOptions: TReviewFilterOptions) => {
+  const [filter, setFilter] = useState(filterOptions)
+
+  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
+    if (key) {
+      if (typeof e === "string") {
+        if (e === "") {
+          if (key in filter) {
+            const newFilterOption = { ...filter }
+            // @ts-ignore
+            delete newFilterOption[key]
+            setFilter(newFilterOption)
+          }
+        } else {
+          setFilter({ ...filter, [key]: e })
+        }
+      } else {
+        const target = e.target as HTMLButtonElement
+        if (target.value) setFilter({ ...filter, [key]: target.value })
+        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
+          const targetParent = target.parentElement as HTMLButtonElement
+          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
+        }
+      }
+    }
+  }
+
+  const resetFilterHandler = () => {
+    setFilter(filterOptions)
+  }
+
+  return { filter, onFilterChanged, resetFilterHandler }
+}
