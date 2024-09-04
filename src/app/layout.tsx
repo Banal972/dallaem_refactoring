@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { SessionProvider } from "next-auth/react"
 import localFont from "next/font/local"
 
-import RouteValidationLayout from "@/components/app/RouteValidationLayout"
 import QueryProviders from "@/components/app/provider"
+import GNB from "@/components/public/gnb/GNB"
 import { CountProvider } from "@/provider/CountProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
@@ -71,7 +71,7 @@ const RootLayout = ({
         <SessionProvider>
           <CountProvider>
             <QueryProviders>
-              <RouteValidationLayout>{children}</RouteValidationLayout>
+              <GNB>{children}</GNB>
               {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
             </QueryProviders>
           </CountProvider>

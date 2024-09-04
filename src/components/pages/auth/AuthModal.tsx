@@ -7,13 +7,12 @@ import LoginModal from "@/components/pages/auth/Modal/LoginModal"
 import SignUpModal from "@/components/pages/auth/Modal/SignUpModal"
 import { animated, useChain, useSpring, useSpringRef, useTransition } from "@react-spring/web"
 
-const AuthModal = ({
-  isLogin,
-  setIsLogin,
-}: {
+interface IAuthModal {
   isLogin: boolean
   setIsLogin: Dispatch<SetStateAction<boolean>>
-}) => {
+}
+
+const AuthModal = ({ isLogin, setIsLogin }: IAuthModal) => {
   const [isStep, setIsStep] = useState(0)
 
   const transitionsRef = useSpringRef()
@@ -39,7 +38,7 @@ const AuthModal = ({
   return transitions((style, item) => {
     return (
       item && (
-        <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center text-base">
+        <div className="fixed left-0 top-0 z-[9999] flex h-full w-full items-center justify-center text-base">
           <animated.div
             style={style}
             onClick={() => {
@@ -50,9 +49,9 @@ const AuthModal = ({
                 setIsLogin(false)
               }
             }}
+            className="absolute left-0 top-0 h-full w-full cursor-pointer bg-black/40 backdrop-blur-sm"
             role="button"
             tabIndex={0}
-            className="absolute left-0 top-0 h-full w-full cursor-pointer bg-black/40 backdrop-blur-sm"
             aria-label="Close Modal"
           />
           <animated.div
