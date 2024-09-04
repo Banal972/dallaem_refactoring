@@ -13,14 +13,14 @@ import { useAllReview } from "@/hooks/Review/useAllReview"
 import dayjs from "dayjs"
 
 const MainReview = () => {
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useAllReview({
+  const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } = useAllReview({
     sortOrder: "desc",
   })
 
   const { ref, inView } = useInView({ threshold: 1 })
 
   const render = () => {
-    if (isLoading) {
+    if (isPending) {
       return (
         <div className="grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 lg:gap-x-12">
           {new Array(LIMIT).fill(0).map((_, index) => {

@@ -13,7 +13,7 @@ export const allReviewOptions = (filter: TReviewFilterOptions | {}) => {
 }
 
 export const useAllReview = (filter: TReviewFilterOptions | {}) => {
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+  const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ["allReview", filter],
     queryFn: ({ pageParam = 0 }) => {
       return getAllReview(filter, pageParam)
@@ -29,5 +29,5 @@ export const useAllReview = (filter: TReviewFilterOptions | {}) => {
 
   const dataPage = data?.pages ?? []
 
-  return { data: dataPage, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage }
+  return { data: dataPage, isPending, fetchNextPage, hasNextPage, isFetchingNextPage }
 }
