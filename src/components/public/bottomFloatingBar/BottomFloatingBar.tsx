@@ -1,10 +1,10 @@
 "use client"
 
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 import { useEffect, useRef } from "react"
 
-import checkLogin from "@/actions/Auths/checkLogin"
 import cancelMeeting from "@/actions/Gatherings/cancelMeeting"
 import quitMeeting from "@/actions/Gatherings/quitMeeting"
 import ROUTE from "@/constants/route"
@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: IBannerProps) => {
   const ref = useRef<HTMLDivElement>(null)
+  const session = useSession()
 
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -69,7 +70,7 @@ const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: I
     cancelMutation.mutate()
   }
   const onClickJoin = async () => {
-    if (await checkLogin()) {
+    if (session.data) {
       joinGathering(id, {
         onSuccess: async (res) => {
           await queryClient.invalidateQueries({ queryKey: ["meetingDetail"] })
