@@ -9,15 +9,35 @@ import {
 } from "@/types/review/review"
 import { useQuery } from "@tanstack/react-query"
 
+const useScoreCalculation = (filter: TScoresType) => {
+  const { data: scoreData } = useQuery({
+    queryKey: ["scores", filter],
+    queryFn: () => {
+      return getScoreReview(filter)
+    },
+  })
+
+  return useMemo(() => {
+    if (!scoreData || scoreData.length === 0) {
+      return { allScore: 0, maxScore: 0, ratings: [] }
+    }
+    const { oneStar, twoStars, threeStars, fourStars, fiveStars } = sumScoreData(scoreData)
+    return calculation([oneStar, twoStars, threeStars, fourStars, fiveStars])
+  }, [scoreData])
+}
+
+export default useScoreCalculation
+
 const sumScoreData = (scoreData: IScoreReview[]) => {
   return scoreData.reduce(
     (acc, curr) => {
-      acc.oneStar += curr.oneStar
-      acc.twoStars += curr.twoStars
-      acc.threeStars += curr.threeStars
-      acc.fourStars += curr.fourStars
-      acc.fiveStars += curr.fiveStars
-      return acc
+      return {
+        oneStar: acc.oneStar + curr.oneStar,
+        twoStars: acc.twoStars + curr.twoStars,
+        threeStars: acc.threeStars + curr.threeStars,
+        fourStars: acc.fourStars + curr.fourStars,
+        fiveStars: acc.fiveStars + curr.fiveStars,
+      }
     },
     {
       oneStar: 0,
@@ -63,22 +83,3 @@ const calculation = (score: number[]): IReviewScoreReturn => {
     ratings: ratings(score),
   }
 }
-
-const useScoreCalculation = (filter: TScoresType) => {
-  const { data: scoreData } = useQuery({
-    queryKey: ["scores", filter],
-    queryFn: () => {
-      return getScoreReview(filter)
-    },
-  })
-
-  return useMemo(() => {
-    if (!scoreData || scoreData.length === 0) {
-      return { allScore: 0, maxScore: 0, ratings: [] }
-    }
-    const { oneStar, twoStars, threeStars, fourStars, fiveStars } = sumScoreData(scoreData)
-    return calculation([oneStar, twoStars, threeStars, fourStars, fiveStars])
-  }, [scoreData])
-}
-
-export default useScoreCalculation

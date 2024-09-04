@@ -13,15 +13,7 @@ import { animated, useSpring } from "@react-spring/web"
 const Scores = () => {
   const { filter, onFilterChanged } = useFilter()
   const { allScore, maxScore, ratings } = useScoreCalculation(filter)
-
-  const style = useSpring({
-    from: {
-      clipPath: "inset(0 100% 0 0)",
-    },
-    to: {
-      clipPath: `inset(0 ${100 - (Number(allScore) / 5) * 100}% 0 0)`,
-    },
-  })
+  const style = useSpringScore(allScore)
 
   return (
     <div className="mt-8">
@@ -45,10 +37,7 @@ const Scores = () => {
                 {Array.from({ length: 5 }, (_, index) => {
                   return <Heart key={index + 1} state="default" />
                 })}
-                <animated.div
-                  style={style}
-                  className="absolute left-0 top-0 z-10 flex gap-[2px] transition-all delay-100 duration-500"
-                >
+                <animated.div style={style} className="absolute left-0 top-0 z-10 flex gap-[2px]">
                   {Array.from({ length: 5 }, (_, index) => {
                     return <Heart key={index + 1} state="active" />
                   })}
@@ -75,6 +64,19 @@ const Scores = () => {
 }
 
 export default Scores
+
+const useSpringScore = (allScore: string | number) => {
+  const style = useSpring({
+    from: {
+      clipPath: "inset(0 100% 0 0)",
+    },
+    to: {
+      clipPath: `inset(0 ${100 - (Number(allScore) / 5) * 100}% 0 0)`,
+    },
+  })
+
+  return style
+}
 
 const useFilter = () => {
   const [filter, setFilter] = useState<TScoresType>({
