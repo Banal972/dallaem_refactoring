@@ -17,7 +17,12 @@ import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import { useAllReview } from "@/hooks/Review/useAllReview"
 import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
-import { TReviewFilterOptions } from "@/types/review/review"
+import { IAllReview, TReviewFilterOptions } from "@/types/review/review"
+
+interface ReviewRednerProps {
+  data: IAllReview[][]
+  isPending: boolean
+}
 
 const List = () => {
   const filterOptions: TReviewFilterOptions = {
@@ -29,35 +34,6 @@ const List = () => {
   const { ref, inView } = useInView({ threshold: 1 })
 
   const { data, isPending, hasNextPage, isFetchingNextPage, fetchNextPage } = useAllReview(filter)
-
-  const render = () => {
-    if (isPending) {
-      return new Array(LIMIT).fill(0).map((_, index) => {
-        return <ReviewSkeleton key={`${index + 1}`} />
-      })
-    }
-
-    if (!data || data[0].length === 0) {
-      return <p className="flex w-full flex-1 items-center justify-center">아직 리뷰가 없어요</p>
-    }
-
-    return data.map((reviews) => {
-      return reviews.map((review) => {
-        return (
-          <Link key={review.id} href={`${ROUTE.GATHERINGS}/${review.Gathering.id}`}>
-            <Review
-              score={review.score}
-              comment={review.comment}
-              gathering={review.Gathering}
-              createdAt={review.createdAt}
-              user={review.User}
-              isImage
-            />
-          </Link>
-        )
-      })
-    })
-  }
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -97,7 +73,7 @@ const List = () => {
       <div
         className={`mt-6 flex flex-1 flex-col gap-6 text-sm font-medium leading-5 text-gray-500 ${!isPending && data.length === 0 && "items-center justify-center"}`}
       >
-        {render()}
+        <ReviewRedner data={data} isPending={isPending} />
       </div>
 
       {hasNextPage && isFetchingNextPage && (
@@ -117,6 +93,35 @@ const List = () => {
 }
 
 export default List
+
+const ReviewRedner = ({ data, isPending }: ReviewRednerProps) => {
+  if (isPending) {
+    return new Array(LIMIT).fill(0).map((_, index) => {
+      return <ReviewSkeleton key={`${index + 1}`} />
+    })
+  }
+
+  if (!data || data[0].length === 0) {
+    return <p className="flex w-full flex-1 items-center justify-center">아직 리뷰가 없어요</p>
+  }
+
+  return data.map((reviews) => {
+    return reviews.map((review) => {
+      return (
+        <Link key={review.id} href={`${ROUTE.GATHERINGS}/${review.Gathering.id}`}>
+          <Review
+            score={review.score}
+            comment={review.comment}
+            gathering={review.Gathering}
+            createdAt={review.createdAt}
+            user={review.User}
+            isImage
+          />
+        </Link>
+      )
+    })
+  })
+}
 
 const useFilter = (filterOptions: TReviewFilterOptions) => {
   const [filter, setFilter] = useState(filterOptions)
