@@ -63,6 +63,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return newSession
     },
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    authorized: async ({ auth }) => {
+      return !!auth
+    },
   },
   pages: {
     error: "/auth/error",
