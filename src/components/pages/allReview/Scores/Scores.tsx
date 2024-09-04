@@ -2,30 +2,19 @@
 
 import { useEffect, useState } from "react"
 
-import getScoreReview from "@/actions/Reviews/getScoreReview"
 import RatingBar from "@/components/pages/allReview/Scores/Atoms/RatingBar"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
 import Heart from "@/components/public/icon/dynamicIcon/Heart"
 import useScoreCalculation from "@/hooks/Review/useScoreCalculation"
 import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
 import { TScoresType } from "@/types/review/review"
-import { useQuery } from "@tanstack/react-query"
 
 const Scores = () => {
-  const [filter, setFilter] = useState<TScoresType>({
-    type: "DALLAEMFIT",
-  })
+  const { filter, onFilterChanged } = useFilter()
 
   const [clipPath, setClipPath] = useState(`inset(0 100% 0 0)`)
 
-  const { data: scoreData } = useQuery({
-    queryKey: ["scores", filter],
-    queryFn: () => {
-      return getScoreReview(filter)
-    },
-  })
-
-  const { allScore, maxScore, ratings } = useScoreCalculation(scoreData)
+  const { allScore, maxScore, ratings } = useScoreCalculation(filter)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,30 +25,6 @@ const Scores = () => {
       clearTimeout(timer)
     }
   }, [allScore])
-
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
-  }
 
   return (
     <div className="mt-8">
@@ -114,3 +79,35 @@ const Scores = () => {
 }
 
 export default Scores
+
+const useFilter = () => {
+  const [filter, setFilter] = useState<TScoresType>({
+    type: "DALLAEMFIT",
+  })
+
+  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
+    if (key) {
+      if (typeof e === "string") {
+        if (e === "") {
+          if (key in filter) {
+            const newFilterOption = { ...filter }
+            // @ts-ignore
+            delete newFilterOption[key]
+            setFilter(newFilterOption)
+          }
+        } else {
+          setFilter({ ...filter, [key]: e })
+        }
+      } else {
+        const target = e.target as HTMLButtonElement
+        if (target.value) setFilter({ ...filter, [key]: target.value })
+        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
+          const targetParent = target.parentElement as HTMLButtonElement
+          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
+        }
+      }
+    }
+  }
+
+  return { filter, onFilterChanged }
+}
