@@ -5,12 +5,12 @@ import Link from "next/link"
 
 import { ReactNode } from "react"
 
+import Profile from "@/components/public/gnb/Profile/Profile"
+import SideBarBtn from "@/components/public/gnb/SideBar/Atoms/SideBarBtn"
 import ROUTE from "@/constants/route"
 import useGNBLogic from "@/util/useGNBLogic"
 
-import ProfileComponent from "./components/ProfileComponent"
-import SideBarIcon from "./components/SideBarIcon"
-import SideBarMenu from "./components/SideBarMenu"
+import SideBar from "./SideBar/SideBar"
 
 const GNB = ({ children }: { children: ReactNode }) => {
   const session = useSession()
@@ -22,12 +22,10 @@ const GNB = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <div className="fixed left-0 top-0 z-50 w-full bg-white">
-        <SideBarMenu menuRef={menuRef} isOpen={isOpen || is2XlScreen} />
-
         <div className="relative flex h-[55px] w-full items-center justify-between border-b border-gray-300 px-5 text-sm md:h-[59px] md:px-[30px] md:text-lg">
           {!is2XlScreen && (
             <div className="mr-4">
-              <SideBarIcon onClick={menuIconClick} isOpen={isOpen} />
+              <SideBarBtn onClick={menuIconClick} isOpen={isOpen} />
             </div>
           )}
           <Link
@@ -36,12 +34,14 @@ const GNB = ({ children }: { children: ReactNode }) => {
           >
             같이달램
           </Link>
-          <ProfileComponent profileImg={profileImg} />
+          <Profile profileImg={profileImg} />
         </div>
+
+        <SideBar menuRef={menuRef} isOpen={isOpen || is2XlScreen} />
       </div>
 
       <div
-        className={`pt-[56px] transition-all duration-300 ease-in-out md:pt-[59px] ${is2XlScreen ? "lg:ml-[220px]" : ""}`}
+        className={`pt-[56px] transition-all duration-300 ease-in-out md:pt-[59px] ${is2XlScreen && "lg:ml-[220px]"}`}
       >
         {children}
       </div>
