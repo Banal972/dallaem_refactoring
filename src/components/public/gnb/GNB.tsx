@@ -1,23 +1,19 @@
 "use client"
 
-import { useSession } from "next-auth/react"
 import Link from "next/link"
 
-import { ReactNode } from "react"
+import { Dispatch, ReactNode, SetStateAction, useEffect, useRef, useState } from "react"
 
 import Profile from "@/components/public/gnb/Profile/Profile"
 import SideBarBtn from "@/components/public/gnb/SideBar/Atoms/SideBarBtn"
 import ROUTE from "@/constants/route"
-import useGNBLogic from "@/util/useGNBLogic"
+import useOutsideClick from "@/util/useOutsideClick"
 
 import SideBar from "./SideBar/SideBar"
 
 const GNB = ({ children }: { children: ReactNode }) => {
-  const session = useSession()
-
-  const { isOpen, is2XlScreen, profileImg, menuRef, menuIconClick } = useGNBLogic(
-    session.data?.accessToken,
-  )
+  const { isOpen, setIsOpen, menuRef, menuIconClick } = useMenu()
+  const { is2XlScreen } = useScreen(setIsOpen)
 
   return (
     <>
@@ -34,7 +30,7 @@ const GNB = ({ children }: { children: ReactNode }) => {
           >
             같이달램
           </Link>
-          <Profile profileImg={profileImg} />
+          <Profile />
         </div>
 
         <SideBar menuRef={menuRef} isOpen={isOpen || is2XlScreen} />
@@ -50,3 +46,53 @@ const GNB = ({ children }: { children: ReactNode }) => {
 }
 
 export default GNB
+
+const useScreen = (setIsOpen: Dispatch<SetStateAction<boolean>>) => {
+  const [is2XlScreen, setIs2XlScreen] = useState(false)
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const newIs2XlScreen = window.innerWidth >= 1024
+      setIs2XlScreen(newIs2XlScreen)
+      if (!newIs2XlScreen) {
+        setIsOpen(false)
+      }
+    }
+
+    checkScreenSize()
+
+    let timeoutId: number
+    const debouncedResize = () => {
+      clearTimeout(timeoutId)
+      timeoutId = window.setTimeout(checkScreenSize, 100)
+    }
+
+    window.addEventListener("resize", debouncedResize)
+
+    return () => {
+      window.removeEventListener("resize", debouncedResize)
+      clearTimeout(timeoutId)
+    }
+  }, [setIsOpen])
+
+  return {
+    is2XlScreen,
+  }
+}
+
+const useMenu = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const menuRef = useRef(null)
+
+  useOutsideClick(menuRef, () => {
+    setIsOpen(false)
+  })
+
+  const menuIconClick = () => {
+    setIsOpen((prev) => {
+      return !prev
+    })
+  }
+
+  return { isOpen, setIsOpen, menuRef, menuIconClick }
+}
