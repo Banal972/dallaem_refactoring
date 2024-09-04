@@ -19,6 +19,8 @@ const MainReview = () => {
 
   const { ref, inView } = useInView({ threshold: 1 })
 
+  const isEmptyData = !data || (data && data[0]?.length === 0)
+
   const render = () => {
     if (isLoading) {
       return (
@@ -30,7 +32,7 @@ const MainReview = () => {
       )
     }
 
-    if (!data || (data && data[0]?.length === 0)) {
+    if (isEmptyData) {
       return (
         <p className="w-full py-10 text-center text-sm text-gray-500">
           리뷰 첫 주인공이 돼주세요! 🖐️
