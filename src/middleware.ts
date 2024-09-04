@@ -1,14 +1,16 @@
+import { NextAuthRequest } from "next-auth/lib"
+
 import { auth } from "@/auth"
 
 import ROUTE from "./constants/route"
 
+const isAuth = (req: NextAuthRequest, url: string) => {
+  return !req.auth && req.nextUrl.pathname === url
+}
+
 // eslint-disable-next-line consistent-return
 export default auth((req) => {
-  if (!req.auth && req.nextUrl.pathname === "/mypage") {
-    const newUrl = new URL(ROUTE.HOME, req.nextUrl.origin)
-    return Response.redirect(newUrl)
-  }
-  if (!req.auth && req.nextUrl.pathname === "/wishlist") {
+  if (isAuth(req, "/mypage") || isAuth(req, "/wishlist")) {
     const newUrl = new URL(ROUTE.HOME, req.nextUrl.origin)
     return Response.redirect(newUrl)
   }
