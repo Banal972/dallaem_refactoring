@@ -11,10 +11,9 @@ import { TScoresType } from "@/types/review/review"
 
 const Scores = () => {
   const { filter, onFilterChanged } = useFilter()
+  const { allScore, maxScore, ratings } = useScoreCalculation(filter)
 
   const [clipPath, setClipPath] = useState(`inset(0 100% 0 0)`)
-
-  const { allScore, maxScore, ratings } = useScoreCalculation(filter)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,7 +36,8 @@ const Scores = () => {
         />
       </div>
       <div className="mt-6 flex h-[180px] items-center justify-center gap-5 border-2 border-l-0 border-r-0 border-primary md:gap-[138px] xl:gap-[188px]">
-        {Number(allScore) > 0 ? (
+        {Number(allScore) < 1 && <p className="text-sm text-gray-500">아직 리뷰가 없어요</p>}
+        {Number(allScore) > 0 && (
           <>
             <div>
               <p className="text-center text-xl font-semibold leading-8 text-gray-900 sm:text-2xl">
@@ -70,8 +70,6 @@ const Scores = () => {
               })}
             </div>
           </>
-        ) : (
-          <p className="text-sm text-gray-500">아직 리뷰가 없어요</p>
         )}
       </div>
     </div>

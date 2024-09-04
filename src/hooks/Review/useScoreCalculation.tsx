@@ -1,12 +1,7 @@
 import { useMemo } from "react"
 
 import getScoreReview from "@/actions/Reviews/getScoreReview"
-import {
-  IReviewScoreReturn,
-  TReviewScoreRatings,
-  TScoresType,
-  TuseScoreCalculation,
-} from "@/types/review/review"
+import { IReviewScoreReturn, TReviewScoreRatings, TScoresType } from "@/types/review/review"
 import { useQuery } from "@tanstack/react-query"
 
 const reviewSum = (score: number[]) => {
