@@ -30,7 +30,7 @@ const MainReview = () => {
       )
     }
 
-    if (!data || (data && data[0].length === 0)) {
+    if (!data || (data && data[0]?.length === 0)) {
       return (
         <p className="w-full py-10 text-center text-sm text-gray-500">
           리뷰 첫 주인공이 돼주세요! 🖐️

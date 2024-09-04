@@ -14,7 +14,7 @@ const ProfileEditBtn = () => {
         return goPath(`${ROUTE.MY_PAGE}/edit`)
       }}
       type="button"
-      className="size-8 rounded-full border-none bg-cover bg-no-repeat"
+      className="size-8 rounded-full border-none bg-cover bg-no-repeat z-30"
     >
       {" "}
       <Edit state="large" />
