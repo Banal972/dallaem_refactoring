@@ -95,13 +95,15 @@ const List = () => {
 export default List
 
 const ReviewRedner = ({ data, isPending }: ReviewRednerProps) => {
+  const isEmptyData = !data || data[0].length === 0
+
   if (isPending) {
     return new Array(LIMIT).fill(0).map((_, index) => {
       return <ReviewSkeleton key={`${index + 1}`} />
     })
   }
 
-  if (!data || data[0].length === 0) {
+  if (isEmptyData) {
     return <p className="flex w-full flex-1 items-center justify-center">아직 리뷰가 없어요</p>
   }
 
