@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import RatingBar from "@/components/pages/allReview/Scores/Atoms/RatingBar"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
@@ -8,22 +8,20 @@ import Heart from "@/components/public/icon/dynamicIcon/Heart"
 import useScoreCalculation from "@/hooks/Review/useScoreCalculation"
 import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
 import { TScoresType } from "@/types/review/review"
+import { animated, useSpring } from "@react-spring/web"
 
 const Scores = () => {
   const { filter, onFilterChanged } = useFilter()
   const { allScore, maxScore, ratings } = useScoreCalculation(filter)
 
-  const [clipPath, setClipPath] = useState(`inset(0 100% 0 0)`)
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setClipPath(`inset(0 ${100 - (Number(allScore) / 5) * 100}% 0 0)`)
-    }, 100)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [allScore])
+  const style = useSpring({
+    from: {
+      clipPath: "inset(0 100% 0 0)",
+    },
+    to: {
+      clipPath: `inset(0 ${100 - (Number(allScore) / 5) * 100}% 0 0)`,
+    },
+  })
 
   return (
     <div className="mt-8">
@@ -47,14 +45,14 @@ const Scores = () => {
                 {Array.from({ length: 5 }, (_, index) => {
                   return <Heart key={index + 1} state="default" />
                 })}
-                <div
-                  style={{ clipPath }}
+                <animated.div
+                  style={style}
                   className="absolute left-0 top-0 z-10 flex gap-[2px] transition-all delay-100 duration-500"
                 >
                   {Array.from({ length: 5 }, (_, index) => {
                     return <Heart key={index + 1} state="active" />
                   })}
-                </div>
+                </animated.div>
               </div>
             </div>
             <div>
