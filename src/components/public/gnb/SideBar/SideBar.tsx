@@ -7,6 +7,11 @@ import ROUTE from "@/constants/route"
 import { useWishCount } from "@/provider/CountProvider"
 import { animated, config, useSpring, useTransition } from "@react-spring/web"
 
+interface ISideBarMenuProps {
+  menuRef: React.RefObject<HTMLDivElement>
+  isOpen: boolean
+}
+
 const navItems = [
   { href: ROUTE.HOME, label: "홈" },
   { href: ROUTE.GATHERINGS, label: "모임 찾기" },
@@ -14,27 +19,13 @@ const navItems = [
   { href: ROUTE.ALL_REVIEW, label: "모든 리뷰" },
 ]
 
-// 테일윈드 스타일
-const menuStyles = {
-  wrraper: "flex flex-col justify-start ",
-  navItem: "px-[10px] py-[3px] font-semibold text-[#6B7280] text-base md:text-sm lg:text-base",
-  currentNavItem: "text-black bg-primary/60",
-  hoveredNavItem:
-    "transform rounded-md transition-all delay-[10ms] duration-150 ease-in-out hover:bg-primary/60",
-}
+const navBaseStyles = `px-[10px] py-[3px] font-semibold text-[#6B7280] text-base md:text-sm lg:text-base transform rounded-md transition-all delay-[10ms] duration-150 ease-in-out hover:bg-primary/60`
+const currentNavStyles = `px-[10px] py-[3px] font-semibold text-[#6B7280] text-base md:text-sm lg:text-base text-black bg-primary/60 transform rounded-md transition-all delay-[10ms] duration-150 ease-in-out hover:bg-primary/60`
 
-const navBaseStyles = `${menuStyles.navItem} ${menuStyles.hoveredNavItem}`
-const currentNavStyles = `${menuStyles.navItem} ${menuStyles.currentNavItem} ${menuStyles.hoveredNavItem}`
-
-interface ISideBarMenuProps {
-  menuRef: React.RefObject<HTMLDivElement>
-  isOpen: boolean
-}
-
-const SideBarMenu = ({ menuRef, isOpen }: ISideBarMenuProps) => {
-  const { wishCount } = useWishCount()
+const SideBar = ({ menuRef, isOpen }: ISideBarMenuProps) => {
   const isClient = typeof window !== "undefined"
   const currentPath = usePathname()
+  const { wishCount } = useWishCount()
 
   const menuTransition = useTransition(isOpen, {
     from: { opacity: 0 },
@@ -43,7 +34,6 @@ const SideBarMenu = ({ menuRef, isOpen }: ISideBarMenuProps) => {
     config: { duration: 150 },
   })
 
-  // 컨테이너 애니메이션
   const containerAnimation = useSpring({
     from: {
       clipPath: "circle(0% at 0 0)",
@@ -59,7 +49,6 @@ const SideBarMenu = ({ menuRef, isOpen }: ISideBarMenuProps) => {
     },
   })
 
-  // 내부 요소 애니메이션
   const itemAnimation = useSpring({
     from: { opacity: 0, transform: "translateY(5px)" },
     to: { opacity: 1, transform: "translateY(0px)" },
@@ -79,7 +68,7 @@ const SideBarMenu = ({ menuRef, isOpen }: ISideBarMenuProps) => {
         style={{ ...style, ...containerAnimation }}
         className="absolute left-0 top-14 z-50 flex h-[calc(100vh-56px)] w-[80%] flex-col items-stretch justify-between border-r border-r-[##D1D5DB] bg-white p-5 text-2xl shadow-lg md:top-[60px] md:h-[calc(100vh-60px)] md:w-[220px] md:py-[17px] md:text-sm"
       >
-        <animated.div style={itemAnimation} className={`${menuStyles.wrraper}`}>
+        <animated.div style={itemAnimation} className="flex flex-col justify-start">
           <div className="flex flex-col gap-5">
             {navItems.map((item) => {
               const isLabel = item.label === "찜한 모임"
@@ -120,4 +109,4 @@ const SideBarMenu = ({ menuRef, isOpen }: ISideBarMenuProps) => {
   })
 }
 
-export default SideBarMenu
+export default SideBar
