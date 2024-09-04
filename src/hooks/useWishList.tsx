@@ -8,7 +8,7 @@ import dayjs from "dayjs"
 
 const useWishList = (filter: IFilterOption) => {
   const [wish, setWish] = useState<IWishListData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isPending, setIsPending] = useState(true)
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const { ref, inView } = useInView({
@@ -83,8 +83,7 @@ const useWishList = (filter: IFilterOption) => {
   }, [page, filterAndSort])
 
   useEffect(() => {
-    // Initial fetch
-    setIsLoading(false)
+    setIsPending(false)
     const storage = JSON.parse(localStorage.getItem("wishlist") || "[]")
     const newItems = filterAndSort(storage).slice(0, 10)
     setWish(newItems)
@@ -101,7 +100,7 @@ const useWishList = (filter: IFilterOption) => {
     }
   }, [inView, hasMore, loadMore])
 
-  return { wish, setWish, ref, isLoading, hasMore }
+  return { wish, setWish, ref, isPending, hasMore }
 }
 
 export default useWishList
