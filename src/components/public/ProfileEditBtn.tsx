@@ -1,22 +1,20 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-
 import ROUTE from "@/constants/route"
+import useNav from "@/hooks/useNav"
 
 import Edit from "./img/Edit"
 
 const ProfileEditBtn = () => {
-  const router = useRouter()
+  const { goPath } = useNav()
 
-  const handleClick = () => {
-    router.push(`${ROUTE.MY_PAGE}/edit`)
-  }
   return (
     <button
-      onClick={handleClick}
+      onClick={() => {
+        return goPath(`${ROUTE.MY_PAGE}/edit`)
+      }}
       type="button"
-      className="size-8 rounded-full border-none bg-cover bg-no-repeat"
+      className="size-8 rounded-full border-none bg-cover bg-no-repeat z-30"
     >
       {" "}
       <Edit state="large" />

@@ -4,29 +4,10 @@ import useTapHook from "@/hooks/mypage/useTapHook"
 
 import MyPageInfoTapButton from "./MyPageInfoTapButton"
 import MyPageInfoWrapper from "./MyPageInfoWrapper"
-
-const animatedBottomClassName = (state: string) => {
-  const myMeetingClass = "w-[66px] -translate-x-[1px] md:w-[74px]"
-  const myReviewClass = "w-[54px] translate-x-[76px] md:w-[62px] md:translate-x-[85px]"
-  const myOwnMeetingClass = "w-[82px] translate-x-[140px] md:w-[94px] md:translate-x-[155px]"
-
-  switch (state) {
-    case "myMeeting":
-      return myMeetingClass
-    case "myReview":
-      return myReviewClass
-    case "myOwnMeeting":
-      return myOwnMeetingClass
-    default:
-      return myMeetingClass
-  }
-}
+import UnderBar from "./UnderBar"
 
 const MyPageInfoTap = () => {
-  const { tapState, dispatch } = useTapHook()
-  const [[dataFetchingKey]] = Object.entries(tapState).filter((state) => {
-    return state[1] === true && state[0] !== "isReviewed"
-  })
+  const { tapState, dispatch, dataFetchingKey } = useTapHook()
 
   return (
     <section className="mx-auto mt-6 w-full grow border-t-2 border-primary bg-white p-6">
@@ -38,14 +19,12 @@ const MyPageInfoTap = () => {
           state="myOwnMeeting"
           isActive={tapState.myOwnMeeting}
         />
-        <div
-          className={`absolute bottom-0 h-[1.5px] bg-gray-900 transition-transform ${animatedBottomClassName(dataFetchingKey)}`}
-        />
+        <UnderBar dataFetchingKey={dataFetchingKey} />
       </div>
       <MyPageInfoWrapper
         onClick={dispatch}
         dataFetchingKey={dataFetchingKey}
-        isReviewed={tapState.isReviewed ?? undefined}
+        isReviewed={tapState.isReviewed}
       />
     </section>
   )

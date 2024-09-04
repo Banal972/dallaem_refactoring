@@ -52,3 +52,24 @@ export interface IEmailExists extends IMessage {
 }
 
 export type TSignupResponse = IEmailExists | IValidationError | IMessage
+
+// 리팩토링 후
+
+export interface PasswordVisibility {
+  showPwd: boolean
+  verifyShowPwd: boolean
+}
+
+export declare module "next-auth" {
+  interface User {
+    accessToken: string
+  }
+  interface Session {
+    accessToken: string
+  }
+}
+export declare module "@auth/core/jwt" {
+  interface JWT {
+    accessToken: string
+  }
+}

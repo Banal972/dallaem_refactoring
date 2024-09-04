@@ -1,12 +1,12 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { cookies } from "next/headers"
 
+import { auth } from "@/auth"
 import ROUTE from "@/constants/route"
 
 const editProfileInfo = async (formData: FormData) => {
-  const userToken = cookies().get("userToken")?.value
+  const session = await auth()
   const img = formData.get("image")
 
   if (img instanceof File && img.size === 0) {
@@ -18,7 +18,7 @@ const editProfileInfo = async (formData: FormData) => {
     body: formData,
     headers: {
       "content-header": "multipart/form-data",
-      Authorization: `Bearer ${userToken}`,
+      Authorization: `Bearer ${session?.accessToken}`,
     },
   })
 

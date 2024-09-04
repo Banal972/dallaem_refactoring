@@ -1,16 +1,16 @@
 "use server"
 
+import { auth } from "@/auth"
 import { ICustomResponse, IMeetingDataState } from "@/types/findMeeting/findMeeting"
-import { getCookie } from "@/util/cookies"
 
 const generateGathering = async (formData: FormData): Promise<IMeetingDataState> => {
+  const session = await auth()
   try {
-    const token = await getCookie("userToken")
     const data: RequestInit = {
       method: "POST",
       body: formData,
       headers: {
-        Authorization: token ? `Bearer ${token}` : "",
+        Authorization: session?.accessToken ? `Bearer ${session.accessToken}` : "",
       },
     }
 
