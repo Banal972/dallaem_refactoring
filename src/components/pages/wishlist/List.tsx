@@ -40,7 +40,7 @@ const List = () => {
     )
   }
 
-  const IsHasMore = hasMore && !isPending
+  const HasMoreData = hasMore && !isPending
 
   return (
     <>
@@ -127,7 +127,7 @@ const List = () => {
           </div>
         )}
 
-        {IsHasMore && (
+        {HasMoreData && (
           <div ref={ref} className="w-full">
             <Spinner />
           </div>
