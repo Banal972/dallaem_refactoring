@@ -55,6 +55,10 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
     goPath(`${ROUTE.MY_PAGE}/addReview?gatheringId=${pathId}`)
   }
 
+  const CardBtnHandler = (btnSort: boolean, pathId: number, e: MouseEvent) => {
+    return btnSort ? clickViewReviewHandler(e) : clickCreateReviewHandler(e, pathId)
+  }
+
   useEffect(() => {
     fetchNextPage()
   }, [inView, fetchNextPage])
@@ -127,13 +131,9 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
                       {isCurrentDateAfter(item.registrationEnd) ? (
                         <CardBtn
                           type="active"
-                          onClick={
-                            item.isReviewed
-                              ? clickViewReviewHandler
-                              : (e: MouseEvent) => {
-                                  clickCreateReviewHandler(e, item.id)
-                                }
-                          }
+                          onClick={(e: MouseEvent) => {
+                            return CardBtnHandler(item.isReviewed, item.id, e)
+                          }}
                         >
                           {item.isReviewed ? "내가 쓴 리뷰 보기" : "리뷰 작성하기"}
                         </CardBtn>
