@@ -17,74 +17,23 @@ import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import { useAllReview } from "@/hooks/Review/useAllReview"
 import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
-import { TReviewFilterOptions } from "@/types/review/review"
+import { IAllReview, TReviewFilterOptions } from "@/types/review/review"
+
+interface ReviewRednerProps {
+  data: IAllReview[][]
+  isPending: boolean
+}
 
 const List = () => {
   const filterOptions: TReviewFilterOptions = {
     sortOrder: "desc",
   }
 
-  const [filter, setFilter] = useState<TReviewFilterOptions>(filterOptions)
+  const { filter, onFilterChanged, resetFilterHandler } = useFilter(filterOptions)
+
   const { ref, inView } = useInView({ threshold: 1 })
 
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
-  }
-
-  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useAllReview(filter)
-
-  const resetFilterHandler = () => {
-    setFilter(filterOptions)
-  }
-
-  const render = () => {
-    if (isLoading) {
-      return new Array(LIMIT).fill(0).map((_, index) => {
-        return <ReviewSkeleton key={`${index + 1}`} />
-      })
-    }
-
-    if (!data || data[0].length === 0) {
-      return <p className="flex w-full flex-1 items-center justify-center">아직 리뷰가 없어요</p>
-    }
-
-    return data.map((reviews) => {
-      return reviews.map((review) => {
-        return (
-          <Link key={review.id} href={`${ROUTE.GATHERINGS}/${review.Gathering.id}`}>
-            <Review
-              score={review.score}
-              comment={review.comment}
-              gathering={review.Gathering}
-              createdAt={review.createdAt}
-              user={review.User}
-              isImage
-            />
-          </Link>
-        )
-      })
-    })
-  }
+  const { data, isPending, hasNextPage, isFetchingNextPage, fetchNextPage } = useAllReview(filter)
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -122,9 +71,9 @@ const List = () => {
       </div>
 
       <div
-        className={`mt-6 flex flex-1 flex-col gap-6 text-sm font-medium leading-5 text-gray-500 ${!isLoading && data.length === 0 && "items-center justify-center"}`}
+        className={`mt-6 flex flex-1 flex-col gap-6 text-sm font-medium leading-5 text-gray-500 ${!isPending && data.length === 0 && "items-center justify-center"}`}
       >
-        {render()}
+        <ReviewRedner data={data} isPending={isPending} />
       </div>
 
       {hasNextPage && isFetchingNextPage && (
@@ -144,3 +93,68 @@ const List = () => {
 }
 
 export default List
+
+const ReviewRedner = ({ data, isPending }: ReviewRednerProps) => {
+  const isEmptyData = !data || (data && data[0]?.length === 0)
+
+  if (isPending) {
+    return new Array(LIMIT).fill(0).map((_, index) => {
+      return <ReviewSkeleton key={`${index + 1}`} />
+    })
+  }
+
+  if (isEmptyData) {
+    return <p className="flex w-full flex-1 items-center justify-center">아직 리뷰가 없어요</p>
+  }
+
+  return data.map((reviews) => {
+    return reviews.map((review) => {
+      return (
+        <Link key={review.id} href={`${ROUTE.GATHERINGS}/${review.Gathering.id}`}>
+          <Review
+            score={review.score}
+            comment={review.comment}
+            gathering={review.Gathering}
+            createdAt={review.createdAt}
+            user={review.User}
+            isImage
+          />
+        </Link>
+      )
+    })
+  })
+}
+
+const useFilter = (filterOptions: TReviewFilterOptions) => {
+  const [filter, setFilter] = useState(filterOptions)
+
+  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
+    if (key) {
+      if (typeof e === "string") {
+        if (e === "") {
+          if (key in filter) {
+            const newFilterOption = { ...filter }
+            // @ts-ignore
+            delete newFilterOption[key]
+            setFilter(newFilterOption)
+          }
+        } else {
+          setFilter({ ...filter, [key]: e })
+        }
+      } else {
+        const target = e.target as HTMLButtonElement
+        if (target.value) setFilter({ ...filter, [key]: target.value })
+        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
+          const targetParent = target.parentElement as HTMLButtonElement
+          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
+        }
+      }
+    }
+  }
+
+  const resetFilterHandler = () => {
+    setFilter(filterOptions)
+  }
+
+  return { filter, onFilterChanged, resetFilterHandler }
+}
