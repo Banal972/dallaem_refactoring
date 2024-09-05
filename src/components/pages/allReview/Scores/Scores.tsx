@@ -6,12 +6,13 @@ import RatingBar from "@/components/pages/allReview/Scores/Atoms/RatingBar"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
 import Heart from "@/components/public/icon/dynamicIcon/Heart"
 import useScoreCalculation from "@/hooks/Review/useScoreCalculation"
-import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
 import { TScoresType } from "@/types/review/review"
+import onFilterChanged from "@/util/onFilterChanged"
 import { animated, useSpring } from "@react-spring/web"
 
 const Scores = () => {
-  const { filter, onFilterChanged } = useFilter()
+  const { filter, updateFilterOption } = useFilter()
+
   const { allScore, maxScore, ratings } = useScoreCalculation(filter)
   const style = useSpringScore(allScore)
 
@@ -21,7 +22,7 @@ const Scores = () => {
         <FilterTab
           selVal={filter.type}
           onSelect={(e) => {
-            onFilterChanged(e, "type")
+            onFilterChanged(e, "type", filter, updateFilterOption)
           }}
         />
       </div>
@@ -91,29 +92,11 @@ const useFilter = () => {
     type: "DALLAEMFIT",
   })
 
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
+  const updateFilterOption = (newOption: Partial<TScoresType>) => {
+    setFilter((prevOption) => {
+      return { ...prevOption, ...newOption }
+    })
   }
 
-  return { filter, onFilterChanged }
+  return { filter, updateFilterOption }
 }
