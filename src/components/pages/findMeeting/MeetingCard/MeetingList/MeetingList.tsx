@@ -1,10 +1,10 @@
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 
 import { MouseEvent } from "react"
 
-import checkLogin from "@/actions/Auths/checkLogin"
 import joinGathering from "@/actions/Gatherings/joinGathering"
 import DateTag from "@/components/pages/findMeeting/MeetingCard/Atoms/DateTag"
 import ParticipantGage from "@/components/pages/findMeeting/MeetingCard/Atoms/ParticipantGage"
@@ -17,6 +17,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
 
 export const MeetingCard = ({ data }: { data: IMeetingData }) => {
+  const session = useSession()
+
   const router = useRouter()
   const queryClient = useQueryClient()
   const pathname = usePathname()
@@ -33,7 +35,7 @@ export const MeetingCard = ({ data }: { data: IMeetingData }) => {
   const joinNow = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (await checkLogin()) {
+    if (session.data) {
       const res = await mutation.mutateAsync()
       router.replace(`${pathname}?alert=${res}&type=alert`, { scroll: false })
     } else {

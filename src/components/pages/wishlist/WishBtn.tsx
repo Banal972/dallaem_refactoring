@@ -1,10 +1,10 @@
 "use client"
 
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 import { MouseEvent, useEffect, useState } from "react"
 
-import checkLogin from "@/actions/Auths/checkLogin"
 import ROUTE from "@/constants/route"
 import { useWishCount } from "@/provider/CountProvider"
 import { IWishListData } from "@/types/wishlist/wishlist"
@@ -15,6 +15,7 @@ import Heart from "@public/icon/dynamicIcon/heart.svg"
  */
 
 const WishBtn = ({ list }: { list: IWishListData }) => {
+  const session = useSession()
   const router = useRouter()
   const [isWish, setIsWish] = useState(false)
   const { setWishCount } = useWishCount()
@@ -22,7 +23,7 @@ const WishBtn = ({ list }: { list: IWishListData }) => {
   const HandlerWish = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (await checkLogin()) {
+    if (session.data) {
       const wish = localStorage.getItem("wishlist")
 
       if (wish) {

@@ -1,11 +1,11 @@
 "use client"
 
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 
-import checkLogin from "@/actions/Auths/checkLogin"
 import FilterCalendar from "@/components/pages/findMeeting/FilterCalendar/FilterCalendar"
 import FilterSort from "@/components/pages/findMeeting/FilterSort/FilterSort"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
@@ -25,6 +25,8 @@ import onFilterChanged from "@/util/onFilterChanged"
 import headClassIMG from "@public/img/head_class.png"
 
 const FindMeeting = () => {
+  const session = useSession()
+
   const initialFilterOption: IFilterOption = {
     type: "DALLAEMFIT",
     sortBy: "registrationEnd",
@@ -49,8 +51,8 @@ const FindMeeting = () => {
 
   const { goPath } = useNav()
 
-  const onClickCreateMeeting = async () => {
-    if (await checkLogin()) setIsMeetingModal(!isMeetingModal)
+  const onClickCreateMeeting = () => {
+    if (session.data) setIsMeetingModal(!isMeetingModal)
     else goPath(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
   }
 

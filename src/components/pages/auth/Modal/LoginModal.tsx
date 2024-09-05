@@ -83,11 +83,12 @@ const useSubmit = () => {
   const [error, setError] = useState("")
 
   const onSubmit = handleSubmit(async (data) => {
-    const res = await signIn("credentials", { ...data, callbackUrl: "/" })
+    const res = await signIn("credentials", { ...data, redirect: false, callbackUrl: "/" })
     if (res?.error) {
       setError("잘못된 이메일 또는 비밀번호입니다")
     }
   })
+
   return { register, errors, error, onSubmit }
 }
 
