@@ -4,7 +4,7 @@ import { meetingDetailOptions } from "@/hooks/useMeetingDetail"
 import { IParams } from "@/types/findMeeting/findMeeting"
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
-const FindMeetingDetail = async ({ params }: IParams) => {
+const FindMeetingDetailPage = async ({ params }: IParams) => {
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(meetingDetailOptions(params.slug))
   return (
@@ -13,4 +13,4 @@ const FindMeetingDetail = async ({ params }: IParams) => {
     </HydrationBoundary>
   )
 }
-export default FindMeetingDetail
+export default FindMeetingDetailPage

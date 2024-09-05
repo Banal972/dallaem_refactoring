@@ -24,7 +24,7 @@ import { IFilterOption } from "@/types/findMeeting/findMeeting"
 import onFilterChanged from "@/util/onFilterChanged"
 import headClassIMG from "@public/img/head_class.png"
 
-const FindMeeting = () => {
+const FindMeetingPage = () => {
   const session = useSession()
 
   const initialFilterOption: IFilterOption = {
@@ -181,4 +181,4 @@ const FindMeeting = () => {
   )
 }
 
-export default FindMeeting
+export default FindMeetingPage
