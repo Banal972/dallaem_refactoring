@@ -20,19 +20,12 @@ import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import useGetMeetingList from "@/hooks/useGetMeetingList"
 import useNav from "@/hooks/useNav"
-import { IFilterOption } from "@/types/findMeeting/findMeeting"
+import { FetchFunction, IFilterOption } from "@/types/findMeeting/findMeeting"
 import onFilterChanged from "@/util/onFilterChanged"
 import headClassIMG from "@public/img/head_class.png"
 
 const FindMeetingPage = () => {
-  const session = useSession()
-
-  const initialFilterOption: IFilterOption = {
-    type: "DALLAEMFIT",
-    sortBy: "registrationEnd",
-    sortOrder: "desc",
-    limit: LIMIT,
-  }
+  const { isModalOpen, toggleModal, createMeetingHandler } = useMeeting()
 
   const {
     data,
@@ -45,22 +38,11 @@ const FindMeetingPage = () => {
     resetFilterOption,
   } = useGetMeetingList(initialFilterOption)
 
-  const [isMeetingModal, setIsMeetingModal] = useState(false)
+  const { ref } = useNextPage(hasNextPage, fetchNextPage)
 
-  const { ref, inView } = useInView()
+  const isDesc = filterOption.sortOrder === "desc"
 
-  const { goPath } = useNav()
-
-  const onClickCreateMeeting = () => {
-    if (session.data) setIsMeetingModal(!isMeetingModal)
-    else goPath(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
-  }
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage()
-    }
-  }, [fetchNextPage, hasNextPage, inView])
+  const hasData = data && data.pages[0].length === 0
 
   return (
     <>
@@ -78,7 +60,6 @@ const FindMeetingPage = () => {
             </div>
           </div>
         </div>
-
         <div className="relative mt-12 flex justify-between">
           <FilterTab
             selVal={filterOption.type}
@@ -89,7 +70,7 @@ const FindMeetingPage = () => {
           <button
             type="button"
             className="absolute right-0 top-0 h-[34px] w-[85px] rounded-lg border border-primary bg-primary text-xs font-semibold leading-6 text-white transition-colors hover:bg-white hover:text-primary sm:text-sm md:h-[44px] md:w-[115px] md:rounded-xl md:text-base"
-            onClick={onClickCreateMeeting}
+            onClick={createMeetingHandler}
           >
             모임 만들기
           </button>
@@ -113,27 +94,19 @@ const FindMeetingPage = () => {
               }}
             />
           </div>
-
           <div className="ml-auto flex gap-2">
             <button
               aria-label="sortButton"
               type="button"
-              className={`group flex size-9 cursor-pointer items-center justify-center rounded-xl border-2 transition-colors ${filterOption.sortOrder === "desc" ? "border-gray-100 bg-white" : "border-gray-100 bg-black"}`}
+              className={`group flex size-9 cursor-pointer items-center justify-center rounded-xl border-2 transition-colors ${
+                isDesc ? "border-gray-100 bg-white" : "border-gray-100 bg-black"
+              }`}
               onClick={() => {
-                if (filterOption.sortOrder === "desc") {
-                  return updateFilterOption({
-                    sortOrder: "asc",
-                  })
-                }
-                return updateFilterOption({
-                  sortOrder: "desc",
-                })
+                const sortOrder = isDesc ? "asc" : "desc"
+                return updateFilterOption({ sortOrder })
               }}
             >
-              <Sort
-                state="default"
-                className={`transition-colors ${filterOption.sortOrder === "asc" && "text-white"} `}
-              />
+              <Sort state="default" className={`transition-colors ${isDesc || "text-white"} `} />
             </button>
             <FilterSort
               onSelect={(e) => {
@@ -143,16 +116,12 @@ const FindMeetingPage = () => {
             />
           </div>
         </div>
-
-        {!data ||
-          (data.pages[0].length === 0 && (
-            <p className="flex w-full flex-1 items-center justify-center text-sm text-gray-500">
-              첫 모임을 등록해주세요! 🖐️
-            </p>
-          ))}
-
+        {hasData && (
+          <p className="flex w-full flex-1 items-center justify-center text-sm text-gray-500">
+            첫 모임을 등록해주세요! 🖐️
+          </p>
+        )}
         <MeetingList data={data ?? null} isLoading={isLoading} />
-
         {isFetchingNextPage ? (
           <div className="py-7">
             <Spinner />
@@ -160,21 +129,16 @@ const FindMeetingPage = () => {
         ) : (
           <div ref={ref} />
         )}
-        {isMeetingModal && (
+        {isModalOpen && (
           <CreateMeetingModal
-            changeState={() => {
-              setIsMeetingModal(!isMeetingModal)
-            }}
+            changeState={toggleModal}
             aria-haspopup="true"
-            aria-pressed={isMeetingModal}
+            aria-pressed={isModalOpen}
           />
         )}
       </div>
-
       <ResetFilter
-        isVisible={
-          Object.entries(initialFilterOption).toString() !== Object.entries(filterOption).toString()
-        }
+        isVisible={hasChangedOption(initialFilterOption, filterOption)}
         onClick={resetFilterOption}
       />
     </>
@@ -182,3 +146,53 @@ const FindMeetingPage = () => {
 }
 
 export default FindMeetingPage
+
+const initialFilterOption: IFilterOption = {
+  type: "DALLAEMFIT",
+  sortBy: "registrationEnd",
+  sortOrder: "desc",
+  limit: LIMIT,
+}
+
+const useMeeting = () => {
+  const session = useSession()
+  const { goPath } = useNav()
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const createMeetingHandler = () => {
+    if (session.data) {
+      toggleModal()
+    } else {
+      goPath(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
+    }
+  }
+
+  return { isModalOpen, toggleModal, createMeetingHandler }
+}
+
+const useNextPage = (hasNext: boolean, fetchNext: FetchFunction) => {
+  const { ref, inView } = useInView()
+
+  useEffect(() => {
+    if (inView && hasNext) {
+      fetchNext()
+    }
+  }, [fetchNext, hasNext, inView])
+
+  return { ref }
+}
+
+const getStringifiedOption = (option: IFilterOption) => {
+  return Object.entries(option).toString()
+}
+
+const hasChangedOption = (initialOption: IFilterOption, changedOption: IFilterOption) => {
+  const hasChangedOptions =
+    getStringifiedOption(initialOption) !== getStringifiedOption(changedOption)
+  return hasChangedOptions
+}

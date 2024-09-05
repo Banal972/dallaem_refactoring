@@ -1,6 +1,14 @@
 import { Dispatch, KeyboardEvent, MouseEvent, ReactNode, SetStateAction } from "react"
 
-import { InfiniteData } from "@tanstack/react-query"
+import {
+  FetchNextPageOptions,
+  InfiniteData,
+  InfiniteQueryObserverResult,
+} from "@tanstack/react-query"
+
+export type FetchFunction = (
+  options?: FetchNextPageOptions,
+) => Promise<InfiniteQueryObserverResult<InfiniteData<IMeetingData[], unknown>, Error>>
 
 export type TCustomFilterEvent =
   | MouseEvent<HTMLButtonElement>
