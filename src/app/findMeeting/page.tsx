@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
@@ -20,6 +19,7 @@ import LIMIT from "@/constants/limit"
 import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import useGetMeetingList from "@/hooks/useGetMeetingList"
+import useNav from "@/hooks/useNav"
 import { IFilterOption } from "@/types/findMeeting/findMeeting"
 import onFilterChanged from "@/util/onFilterChanged"
 import headClassIMG from "@public/img/head_class.png"
@@ -47,11 +47,11 @@ const FindMeeting = () => {
 
   const { ref, inView } = useInView()
 
-  const router = useRouter()
+  const { goPath } = useNav()
 
   const onClickCreateMeeting = async () => {
     if (await checkLogin()) setIsMeetingModal(!isMeetingModal)
-    else router.push(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
+    else goPath(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
   }
 
   useEffect(() => {
