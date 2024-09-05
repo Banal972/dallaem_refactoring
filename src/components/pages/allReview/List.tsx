@@ -16,8 +16,8 @@ import LIMIT from "@/constants/limit"
 import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import { useAllReview } from "@/hooks/Review/useAllReview"
-import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
 import { IAllReview, TReviewFilterOptions } from "@/types/review/review"
+import onFilterChanged from "@/util/onFilterChanged"
 
 interface ReviewRednerProps {
   data: IAllReview[][]
@@ -29,7 +29,7 @@ const List = () => {
     sortOrder: "desc",
   }
 
-  const { filter, onFilterChanged, resetFilterHandler } = useFilter(filterOptions)
+  const { filter, updateFilterOption, resetFilterHandler } = useFilter(filterOptions)
 
   const { ref, inView } = useInView({ threshold: 1 })
 
@@ -49,7 +49,7 @@ const List = () => {
             data={location}
             placeholder="지역 선택"
             onSelect={(e) => {
-              onFilterChanged(e, "location")
+              onFilterChanged(e, "location", filter, updateFilterOption)
             }}
             selVal={filter.location}
           />
@@ -57,14 +57,14 @@ const List = () => {
             placeholder="날짜 선택"
             selVal={filter.date}
             onChange={(e) => {
-              onFilterChanged(e, "date")
+              onFilterChanged(e, "date", filter, updateFilterOption)
             }}
           />
         </div>
 
         <FilterSort
           onSelect={(e) => {
-            onFilterChanged(e, "sortOrder")
+            onFilterChanged(e, "sortOrder", filter, updateFilterOption)
           }}
           selVal={filter.sortOrder}
         />
@@ -128,33 +128,15 @@ const ReviewRedner = ({ data, isPending }: ReviewRednerProps) => {
 const useFilter = (filterOptions: TReviewFilterOptions) => {
   const [filter, setFilter] = useState(filterOptions)
 
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
-  }
-
   const resetFilterHandler = () => {
     setFilter(filterOptions)
   }
 
-  return { filter, onFilterChanged, resetFilterHandler }
+  const updateFilterOption = (newOption: Partial<TReviewFilterOptions>) => {
+    setFilter((prevOption) => {
+      return { ...prevOption, ...newOption }
+    })
+  }
+
+  return { filter, updateFilterOption, resetFilterHandler }
 }
