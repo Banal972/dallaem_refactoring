@@ -12,7 +12,7 @@ import useOutsideClick from "@/util/useOutsideClick"
 import SideBar from "./SideBar/SideBar"
 
 const GNB = ({ children }: { children: ReactNode }) => {
-  const { isOpen, setIsOpen, menuRef, menuIconClick } = useMenu()
+  const { isOpen, setIsOpen, menuRef, menuIconHandler } = useMenu()
   const { is2XlScreen } = useScreen(setIsOpen)
 
   return (
@@ -21,7 +21,7 @@ const GNB = ({ children }: { children: ReactNode }) => {
         <div className="relative flex h-[55px] w-full items-center justify-between border-b border-gray-300 px-5 text-sm md:h-[59px] md:px-[30px] md:text-lg">
           {!is2XlScreen && (
             <div className="mr-4">
-              <SideBarBtn onClick={menuIconClick} isOpen={isOpen} />
+              <SideBarBtn onClick={menuIconHandler} isOpen={isOpen} />
             </div>
           )}
           <Link
@@ -88,11 +88,11 @@ const useMenu = () => {
     setIsOpen(false)
   })
 
-  const menuIconClick = () => {
+  const menuIconHandler = () => {
     setIsOpen((prev) => {
       return !prev
     })
   }
 
-  return { isOpen, setIsOpen, menuRef, menuIconClick }
+  return { isOpen, setIsOpen, menuRef, menuIconHandler }
 }

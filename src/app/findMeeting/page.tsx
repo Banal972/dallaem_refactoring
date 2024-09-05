@@ -72,7 +72,7 @@ const FindMeeting = () => {
     }
   }
 
-  const onClickCreateMeeting = async () => {
+  const onClickCreateMeeting = () => {
     if (session.data) setIsMeetingModal(!isMeetingModal)
     else router.push(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
   }
