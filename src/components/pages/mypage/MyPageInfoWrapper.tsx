@@ -3,7 +3,6 @@
 import { Fragment, MouseEvent, useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 
-import cancelMeeting from "@/actions/Gatherings/cancelMeeting"
 import { fetchMyPageInfo } from "@/actions/Gatherings/fetchMyPageInfo"
 import CardBtn from "@/components/public/Card/Atom/CardBtn"
 import Card from "@/components/public/Card/Card"
@@ -18,6 +17,7 @@ import useNav from "@/hooks/useNav"
 import { IDataSort, IGetMyPageRes, IMyPageInfoWrapperProps, IReview } from "@/types/mypage/mypage"
 import { isCurrentDateAfter } from "@/util/days"
 import { useInfiniteQuery } from "@tanstack/react-query"
+import cancelJoining from "@/actions/Gatherings/cancelJoining"
 
 import MyPageDefault from "./MyPageDefault"
 import ReviewStateButton from "./ReviewStateButton"
@@ -140,8 +140,9 @@ const MyPageInfoWrapper = ({ dataFetchingKey, onClick, isReviewed }: IMyPageInfo
                       ) : (
                         <CardBtn
                           type="outline"
-                          onClick={() => {
-                            return cancelMeeting(String(item.id))
+                          onClick={async (e: MouseEvent) => {
+                            e.preventDefault()
+                            await cancelJoining(item.id)
                           }}
                         >
                           예약 취소하기
