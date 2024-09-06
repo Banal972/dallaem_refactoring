@@ -10,6 +10,10 @@ export type FetchFunction = (
   options?: FetchNextPageOptions,
 ) => Promise<InfiniteQueryObserverResult<InfiniteData<IMeetingData[], unknown>, Error>>
 
+export interface DefaultHandlerProp {
+  [key: string]: () => void
+}
+
 export type TCustomFilterEvent =
   | MouseEvent<HTMLButtonElement>
   | KeyboardEvent<HTMLButtonElement>
