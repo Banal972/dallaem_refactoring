@@ -1,12 +1,11 @@
 "use client"
 
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
 
 import { MouseEvent, useEffect, useState } from "react"
 
-import ROUTE from "@/constants/route"
 import { useWishCount } from "@/provider/CountProvider"
+import { useToast } from "@/provider/ToastProvider"
 import { IWishListData } from "@/types/wishlist/wishlist"
 import Heart from "@public/icon/dynamicIcon/heart.svg"
 
@@ -15,8 +14,8 @@ import Heart from "@public/icon/dynamicIcon/heart.svg"
  */
 
 const WishBtn = ({ list }: { list: IWishListData }) => {
+  const { openToast } = useToast()
   const session = useSession()
-  const router = useRouter()
   const [isWish, setIsWish] = useState(false)
   const { setWishCount } = useWishCount()
 
@@ -50,7 +49,7 @@ const WishBtn = ({ list }: { list: IWishListData }) => {
 
       setIsWish(!isWish)
     } else {
-      router.replace(`${ROUTE.GATHERINGS}?alert=${"로그인이 필요합니다."}`)
+      openToast("로그인이 필요합니다.", "error")
     }
   }
 
