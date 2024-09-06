@@ -7,3 +7,9 @@ declare module "*.svg" {
   // import { ReactComponent as SVGName } from '/src/SVGName.svg'의 형태로 불러올 때 사용됩니다.
   export const ReactComponent: React.VFC<React.SVGProps<SVGSVGElement>>
 }
+
+export type ImageHeaderProp = {
+  sort: "wish" | "meeting" | "review"
+  mainText: string
+  subText: string
+}
