@@ -1,9 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { IoAlertOutline, IoCheckmark } from "react-icons/io5"
 
 import { animated, useTransition } from "@react-spring/web"
+
+const DURATION = 300
 
 const Toast = ({
   toast,
@@ -12,7 +14,7 @@ const Toast = ({
   toast: { message: string; type: string }
   closeToast: () => void
 }) => {
-  const { transitions, message } = useToastTransition({ closeToast, toastMsg: toast.message })
+  const { transitions, message } = useToastTransition({ toast, closeToast })
 
   return transitions((style, item) => {
     return item ? (
@@ -34,31 +36,47 @@ const Toast = ({
 export default Toast
 
 const useToastTransition = ({
+  toast,
   closeToast,
-  toastMsg,
 }: {
+  toast: { message: string; type: string }
   closeToast: () => void
-  toastMsg: string
 }) => {
+  const [isVisible, setIsVisible] = useState(false)
   const [message, setMessage] = useState("")
 
-  const transitions = useTransition(toastMsg, {
+  useEffect(() => {
+    if (toast.message) {
+      setIsVisible(true)
+      setMessage(toast.message)
+    }
+  }, [toast.message])
+
+  const handleClose = useCallback(() => {
+    setIsVisible(false)
+    setTimeout(() => {
+      closeToast()
+    }, DURATION)
+  }, [closeToast])
+
+  useEffect(() => {
+    let timer: any
+    if (isVisible) {
+      timer = setTimeout(handleClose, 3000) // 3초 후 자동으로 닫힘
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+    }
+  }, [isVisible, handleClose])
+
+  const transitions = useTransition(toast.message, {
     from: { opacity: 0, x: "100%" },
     enter: { opacity: 1, x: "0%" },
     leave: { opacity: 0, x: "100%" },
     config: {
-      duration: 300,
-      tension: 120,
-      friction: 44,
-    },
-    delay: toastMsg ? 100 : 3000,
-    onStart: () => {
-      if (toastMsg) {
-        setMessage(toastMsg)
-      }
-    },
-    onRest: () => {
-      closeToast()
+      duration: DURATION,
     },
   })
 
