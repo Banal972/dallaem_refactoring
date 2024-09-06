@@ -55,7 +55,7 @@ const Authenticated = ({ token }: { token: string }) => {
             <button
               type="button"
               onClick={() => {
-                signOut()
+                signOut({ callbackUrl: "/" })
               }}
               className="h-full w-full"
             >
