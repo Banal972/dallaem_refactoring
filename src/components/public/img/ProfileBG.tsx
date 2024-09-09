@@ -12,6 +12,7 @@ const ProfileBG = ({ className }: IProfileBG) => {
       height={47}
       alt="ProfileBG"
       className={className}
+      priority
     />
   )
 }

@@ -14,7 +14,7 @@ const ProfileBox = async () => {
         <h3 className="z-10 text-lg font-semibold text-gray-900">내 프로필</h3>
         <ProfileEditBtn />
       </div>
-      <ProfileBG className="absolute right-5 top-[19px] sm:right-20" />
+      <ProfileBG className="absolute right-5 top-[19px] h-[47px] w-[158px] sm:right-20" />
       <div className="flex px-3">
         <div className="relative -top-3 size-14 shrink-0 rounded-full">
           <Profile profileImg={userInfo.image} state="largeDefault" />

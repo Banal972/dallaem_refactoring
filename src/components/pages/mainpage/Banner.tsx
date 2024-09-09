@@ -53,13 +53,16 @@ const Banner = () => {
                 새로운 모임을 개설해서
                 <br /> 같이달램에서 편리하게 모집하세요!
               </p>
-              <Image
-                className="absolute bottom-0 right-[5%] w-[289px] xl:right-40 xl:w-[409px]"
-                src="/img/banner/banner01.png"
-                alt="배너1 이미지"
-                width={409}
-                height={272}
-              />
+              <div className="absolute bottom-0 right-[5%] w-[289px] after:block after:pb-[calc(272/490*100%)] xl:right-40 xl:w-[409px]">
+                <Image
+                  src="/img/banner/banner01.png"
+                  alt="배너1 이미지"
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
             </div>
           </SwiperSlide>
           <SwiperSlide className="overflow-hidden">
@@ -71,13 +74,15 @@ const Banner = () => {
                 <span className="text-lg md:text-xl lg:text-2xl">모두의 이야기가 모이는 곳,</span>
                 <br /> 같이달램
               </p>
-              <Image
-                className="absolute bottom-0 right-[4%] w-[291px] md:w-[461px] xl:right-[90px] xl:w-[661px]"
-                src="/img/banner/banner02.png"
-                alt="배너2 이미지"
-                width={661}
-                height={299}
-              />
+              <div className="absolute bottom-0 right-[4%] w-[291px] after:block after:pb-[calc(299/661*100%)] md:w-[461px] xl:right-[90px] xl:w-[661px]">
+                <Image
+                  src="/img/banner/banner02.png"
+                  alt="배너2 이미지"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
             </div>
           </SwiperSlide>
           <SwiperSlide className="overflow-hidden">
@@ -89,13 +94,15 @@ const Banner = () => {
                 소중한 사람들과 <br />
                 함께하는 시간
               </p>
-              <Image
-                className="absolute bottom-0 right-[5%] w-[240px] md:right-[9%] md:w-[390px] xl:right-32 xl:w-[490px]"
-                src="/img/banner/banner03.png"
-                alt="배너3 이미지"
-                width={490}
-                height={253}
-              />
+              <div className="absolute bottom-0 right-[5%] w-[240px] after:block after:pb-[calc(253/490*100%)] md:right-[9%] md:w-[390px] xl:right-32 xl:w-[490px]">
+                <Image
+                  src="/img/banner/banner03.png"
+                  alt="배너3 이미지"
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
             </div>
           </SwiperSlide>
         </Swiper>

@@ -67,7 +67,7 @@ export const MeetingCard = ({ data }: { data: IMeetingData }) => {
             alt={`${data.name} 이미지`}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(min-width : 640px) 280px"
             priority
           />
           {msTransform(data.registrationEnd) > dayjs().unix() && (
