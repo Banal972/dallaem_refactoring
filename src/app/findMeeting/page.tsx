@@ -52,7 +52,9 @@ const FindMeetingPage = () => {
         </div>
         <FilterTabs filterOption={filterOption} updateFilterOption={updateFilterOption} />
         {hasData && <DefaultValue />}
+
         <MeetingList data={data ?? null} isLoading={isLoading} />
+
         {isFetchingNextPage ? (
           <div className="py-7">
             <Spinner />

@@ -61,15 +61,15 @@ export const MeetingCard = ({ data }: { data: IMeetingData }) => {
   return (
     <div className="flex w-full overflow-hidden rounded-3xl border-2 border-gray-100 bg-white max-sm:flex-col">
       {data.image && (
-        <div className="relative h-[156px]">
+        <div className="relative h-[156px] w-[280px]">
           <Image
             src={data.image}
-            alt={data.name}
-            width={280}
-            height={156}
-            className="!h-full object-cover max-sm:w-full"
+            alt={`${data.name} 이미지`}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority
           />
-
           {msTransform(data.registrationEnd) > dayjs().unix() && (
             <div className="absolute right-0 top-0 inline-flex items-center rounded-bl-xl bg-primary px-[10px] py-[4px]">
               <Image src="/icon/staticIcon/clock.svg" alt="마감 임박" width={24} height={24} />
