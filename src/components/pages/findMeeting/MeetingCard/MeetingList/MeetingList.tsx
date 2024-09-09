@@ -1,7 +1,6 @@
 import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
 
 import { MouseEvent } from "react"
 
@@ -10,6 +9,7 @@ import DateTag from "@/components/pages/findMeeting/MeetingCard/Atoms/DateTag"
 import ParticipantGage from "@/components/pages/findMeeting/MeetingCard/Atoms/ParticipantGage"
 import WishBtn from "@/components/pages/wishlist/WishBtn"
 import Spinner from "@/components/public/Spinner/Spinner"
+import { useToast } from "@/provider/ToastProvider"
 import { IMeetingData, IMeetingListProps } from "@/types/findMeeting/findMeeting"
 import { isCurrentDateAfter, msTransform } from "@/util/days"
 import ArrowRightSVG from "@public/icon/staticIcon/arrow_right.svg"
@@ -17,11 +17,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
 
 export const MeetingCard = ({ data }: { data: IMeetingData }) => {
+  const { openToast } = useToast()
   const session = useSession()
 
-  const router = useRouter()
   const queryClient = useQueryClient()
-  const pathname = usePathname()
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -37,9 +36,9 @@ export const MeetingCard = ({ data }: { data: IMeetingData }) => {
 
     if (session.data) {
       const res = await mutation.mutateAsync()
-      router.replace(`${pathname}?alert=${res}&type=alert`, { scroll: false })
+      openToast(res, "success")
     } else {
-      router.replace(`${pathname}?alert=${"로그인이 필요합니다."}`, { scroll: false })
+      openToast("로그인이 필요합니다.", "error")
     }
   }
 

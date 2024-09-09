@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 import { Dispatch, SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -81,11 +82,14 @@ const useSubmit = () => {
   } = useForm()
 
   const [error, setError] = useState("")
+  const router = useRouter()
 
   const onSubmit = handleSubmit(async (data) => {
-    const res = await signIn("credentials", { ...data, redirect: false, callbackUrl: "/" })
+    const res = await signIn("credentials", { ...data, redirect: false })
     if (res?.error) {
       setError("잘못된 이메일 또는 비밀번호입니다")
+    } else {
+      router.refresh()
     }
   })
 

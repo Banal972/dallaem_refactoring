@@ -5,6 +5,7 @@ import localFont from "next/font/local"
 import QueryProviders from "@/components/app/provider"
 import GNB from "@/components/public/gnb/GNB"
 import { CountProvider } from "@/provider/CountProvider"
+import { ToastProvider } from "@/provider/ToastProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import "./globals.css"
@@ -69,12 +70,14 @@ const RootLayout = ({
     <html lang="ko" className={`${pretendard.className} ${tmoneyRoundWind.variable}`}>
       <body className="bg-gray-100">
         <SessionProvider>
-          <CountProvider>
-            <QueryProviders>
-              <GNB>{children}</GNB>
-              {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
-            </QueryProviders>
-          </CountProvider>
+          <ToastProvider>
+            <CountProvider>
+              <QueryProviders>
+                <GNB>{children}</GNB>
+                {process.env.NODE_ENV !== "production" && <ReactQueryDevtools position="bottom" />}
+              </QueryProviders>
+            </CountProvider>
+          </ToastProvider>
         </SessionProvider>
       </body>
     </html>

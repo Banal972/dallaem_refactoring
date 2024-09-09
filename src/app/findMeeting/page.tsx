@@ -14,9 +14,8 @@ import ResetFilter from "@/components/public/ResetFilter"
 import Spinner from "@/components/public/Spinner/Spinner"
 import CreateMeetingModal from "@/components/public/modal/CreateMeetingModal"
 import LIMIT from "@/constants/limit"
-import ROUTE from "@/constants/route"
 import useGetMeetingList from "@/hooks/useGetMeetingList"
-import useNav from "@/hooks/useNav"
+import { useToast } from "@/provider/ToastProvider"
 import { FetchFunction, IFilterOption } from "@/types/findMeeting/findMeeting"
 import onFilterChanged from "@/util/onFilterChanged"
 
@@ -90,8 +89,8 @@ const initialFilterOption: IFilterOption = {
 }
 
 const useMeeting = () => {
+  const { openToast } = useToast()
   const session = useSession()
-  const { goPath } = useNav()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -103,7 +102,7 @@ const useMeeting = () => {
     if (session.data) {
       toggleModal()
     } else {
-      goPath(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
+      openToast("로그인 후 이용이 가능합니다.", "success")
     }
   }
 
