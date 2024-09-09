@@ -12,7 +12,7 @@ const ImageHeader = ({ sort, mainText, subText }: ImageHeaderProp) => {
     <div className="flex-none">
       <div className="flex items-center gap-4">
         <div className="size-[72px] flex-none">
-          <Image width={72} height={72} src={imageSrc} alt="headClassIMG" />
+          <Image width={72} height={72} src={imageSrc} alt="headClassIMG" priority />
         </div>
         <div>
           {isMeeting && <p className="text-sm font-medium text-gray-700">{subText}</p>}

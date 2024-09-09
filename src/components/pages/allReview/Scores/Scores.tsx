@@ -4,10 +4,10 @@ import { useEffect, useState } from "react"
 
 import RatingBar from "@/components/pages/allReview/Scores/Atoms/RatingBar"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
-import Heart from "@/components/public/icon/dynamicIcon/Heart"
 import useScoreCalculation from "@/hooks/Review/useScoreCalculation"
 import { TScoresType } from "@/types/review/review"
 import onFilterChanged from "@/util/onFilterChanged"
+import HeartSVG from "@public/icon/dynamicIcon/heart.svg"
 import { animated, useSpring } from "@react-spring/web"
 
 const Scores = () => {
@@ -36,11 +36,11 @@ const Scores = () => {
               </p>
               <div className="relative mt-2 flex gap-[2px]">
                 {Array.from({ length: 5 }, (_, index) => {
-                  return <Heart key={index + 1} state="default" />
+                  return <HeartSVG className="h-6 w-6 text-[#E5E7EB]" key={index + 1} />
                 })}
                 <animated.div style={style} className="absolute left-0 top-0 z-10 flex gap-[2px]">
                   {Array.from({ length: 5 }, (_, index) => {
-                    return <Heart key={index + 1} state="active" />
+                    return <HeartSVG className="h-6 w-6 text-[#EA580C]" key={index + 1} />
                   })}
                 </animated.div>
               </div>
