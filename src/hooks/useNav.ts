@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation"
 const useNav = () => {
   const router = useRouter()
 
-  const goPath = (path = "") => {
+  const goPath = (path = "/") => {
     router.push(path)
   }
 

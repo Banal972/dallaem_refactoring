@@ -9,8 +9,6 @@ interface IToastCountContext {
   closeToast: () => void
 }
 
-const ToastCountContext = createContext<IToastCountContext | null>(null)
-
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toast, setToast] = useState({ message: "", type: "active" })
 
@@ -41,6 +39,8 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     </ToastCountContext.Provider>
   )
 }
+
+const ToastCountContext = createContext<IToastCountContext | null>(null)
 
 export const useToast = () => {
   const { openToast, closeToast } = useContext(ToastCountContext) as IToastCountContext

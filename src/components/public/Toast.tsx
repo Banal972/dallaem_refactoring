@@ -54,13 +54,17 @@ const useToastTransition = ({
 
   const handleClose = useCallback(() => {
     setIsVisible(false)
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       closeToast()
     }, DURATION)
+
+    return () => {
+      clearTimeout(timer)
+    }
   }, [closeToast])
 
   useEffect(() => {
-    let timer: any
+    let timer: ReturnType<typeof setTimeout> | null = null
     if (isVisible) {
       timer = setTimeout(handleClose, 3000) // 3초 후 자동으로 닫힘
     }
