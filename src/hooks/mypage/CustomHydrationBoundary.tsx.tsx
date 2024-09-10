@@ -1,19 +1,6 @@
-import { ReactNode } from "react"
-
 import getQueryClient from "@/components/app/queryClient"
-import { DataTag, HydrationBoundary, UseQueryOptions, dehydrate } from "@tanstack/react-query"
-
-type UseQueryOptionsCompatible = UseQueryOptions<
-  { data: any; hasMore: boolean },
-  Error,
-  { data: any; hasMore: boolean },
-  {}[]
-> & { initialData?: undefined } & { queryKey: DataTag<{}[], { data: any; hasMore: boolean }> }
-
-interface CustomHydrationBoundaryProp {
-  children: ReactNode
-  options: UseQueryOptionsCompatible
-}
+import { CustomHydrationBoundaryProp } from "@/types/mypage/mypage"
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
 const CustomHydrationBoundary = ({ options, children }: CustomHydrationBoundaryProp) => {
   const queryClient = getQueryClient()
