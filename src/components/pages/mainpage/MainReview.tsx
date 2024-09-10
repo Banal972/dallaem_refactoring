@@ -56,6 +56,7 @@ const MainReview = () => {
                       alt="유저 이미지"
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
                   <p className="text-gray-700 after:ml-2">{review.User.name}</p>

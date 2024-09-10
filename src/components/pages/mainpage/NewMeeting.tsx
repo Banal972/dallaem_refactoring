@@ -107,13 +107,15 @@ const NewMeeting = () => {
                           alt={`${meeting.name} 이미지`}
                           fill
                           className="object-cover"
+                          priority
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                       <div className="flex-1 p-4 px-5">
                         <div className="flex flex-wrap items-center">
                           <h2 className="text-lg font-semibold text-gray-800 after:px-2 after:content-['|']">
                             {meeting.name}
-                          </h2>{" "}
+                          </h2>
                           <span className="text-sm font-medium text-gray-700">
                             {meeting.location}
                           </span>

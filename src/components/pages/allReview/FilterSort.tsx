@@ -69,8 +69,6 @@ const FilterSort = (props: IFilterSortProps) => {
         </span>
       </div>
       <div
-        role="listbox"
-        aria-expanded={isOpen}
         className={`absolute top-full z-[1] mt-[2px] box-border flex flex-col overflow-hidden rounded-xl bg-white p-1 text-sm shadow-expand transition delay-100 ease-in-out ${isOpen ? "opacity-1 max-h-none" : "max-h-0 overflow-hidden opacity-0"}`}
       >
         {sortOrder.map((item) => {
