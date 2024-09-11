@@ -1,15 +1,15 @@
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
 
 import { MouseEvent } from "react"
 
-import checkLogin from "@/actions/Auths/checkLogin"
 import joinGathering from "@/actions/Gatherings/joinGathering"
 import DateTag from "@/components/pages/findMeeting/MeetingCard/Atoms/DateTag"
 import ParticipantGage from "@/components/pages/findMeeting/MeetingCard/Atoms/ParticipantGage"
 import WishBtn from "@/components/pages/wishlist/WishBtn"
 import Spinner from "@/components/public/Spinner/Spinner"
+import { useToast } from "@/provider/ToastProvider"
 import { IMeetingData, IMeetingListProps } from "@/types/findMeeting/findMeeting"
 import { isCurrentDateAfter, msTransform } from "@/util/days"
 import ArrowRightSVG from "@public/icon/staticIcon/arrow_right.svg"
@@ -17,9 +17,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
 
 export const MeetingCard = ({ data }: { data: IMeetingData }) => {
-  const router = useRouter()
+  const { openToast } = useToast()
+  const session = useSession()
+
   const queryClient = useQueryClient()
-  const pathname = usePathname()
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -33,11 +34,11 @@ export const MeetingCard = ({ data }: { data: IMeetingData }) => {
   const joinNow = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (await checkLogin()) {
+    if (session.data) {
       const res = await mutation.mutateAsync()
-      router.replace(`${pathname}?alert=${res}&type=alert`, { scroll: false })
+      openToast(res, "success")
     } else {
-      router.replace(`${pathname}?alert=${"로그인이 필요합니다."}`, { scroll: false })
+      openToast("로그인이 필요합니다.", "error")
     }
   }
 
@@ -60,15 +61,15 @@ export const MeetingCard = ({ data }: { data: IMeetingData }) => {
   return (
     <div className="flex w-full overflow-hidden rounded-3xl border-2 border-gray-100 bg-white max-sm:flex-col">
       {data.image && (
-        <div className="relative h-[156px]">
+        <div className="relative h-[156px] w-[280px]">
           <Image
             src={data.image}
-            alt={data.name}
-            width={280}
-            height={156}
-            className="!h-full object-cover max-sm:w-full"
+            alt={`${data.name} 이미지`}
+            fill
+            className="object-cover"
+            sizes="(min-width : 640px) 280px"
+            priority
           />
-
           {msTransform(data.registrationEnd) > dayjs().unix() && (
             <div className="absolute right-0 top-0 inline-flex items-center rounded-bl-xl bg-primary px-[10px] py-[4px]">
               <Image src="/icon/staticIcon/clock.svg" alt="마감 임박" width={24} height={24} />

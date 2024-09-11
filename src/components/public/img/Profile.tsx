@@ -10,7 +10,7 @@ const Profile = ({ className, state, profileImg }: IProfileProps) => {
     const newClassName = `${className} w-[40px] h-[40px] relative`
     return (
       <div className={newClassName}>
-        <Image src={profileImg} alt="ProfileImg" fill className="rounded-full" />
+        <Image src={profileImg} alt="ProfileImg" fill className="rounded-full" sizes="40px" />
       </div>
     )
   }
@@ -18,39 +18,21 @@ const Profile = ({ className, state, profileImg }: IProfileProps) => {
     case "smallDefault": {
       return (
         <div className={className}>
-          <Image
-            width={24}
-            height={24}
-            src={ProfileSmallDefaultIMG}
-            alt="ProfileSmallDefaultIMG"
-            layout="cover"
-          />
+          <Image width={24} height={24} src={ProfileSmallDefaultIMG} alt="ProfileSmallDefaultIMG" />
         </div>
       )
     }
     case "largeDefault": {
       return (
         <div className={className}>
-          <Image
-            src={ProfileLargeDefaultIMG}
-            width={56}
-            height={56}
-            alt="ProfileLargeDefaultIMG"
-            layout="cover"
-          />
+          <Image src={ProfileLargeDefaultIMG} width={56} height={56} alt="ProfileLargeDefaultIMG" />
         </div>
       )
     }
     case "largeEdit": {
       return (
         <div className={className}>
-          <Image
-            src={ProfileLargeEditIMG}
-            width={56}
-            height={56}
-            alt="ProfileLargeEditIMG"
-            layout="cover"
-          />
+          <Image src={ProfileLargeEditIMG} width={56} height={56} alt="ProfileLargeEditIMG" />
         </div>
       )
     }

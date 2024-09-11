@@ -4,14 +4,15 @@ import { useEffect, useState } from "react"
 
 import RatingBar from "@/components/pages/allReview/Scores/Atoms/RatingBar"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
-import Heart from "@/components/public/icon/dynamicIcon/Heart"
 import useScoreCalculation from "@/hooks/Review/useScoreCalculation"
-import { TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
 import { TScoresType } from "@/types/review/review"
+import onFilterChanged from "@/util/onFilterChanged"
+import HeartSVG from "@public/icon/dynamicIcon/heart.svg"
 import { animated, useSpring } from "@react-spring/web"
 
 const Scores = () => {
-  const { filter, onFilterChanged } = useFilter()
+  const { filter, updateFilterOption } = useFilter()
+
   const { allScore, maxScore, ratings } = useScoreCalculation(filter)
   const style = useSpringScore(allScore)
 
@@ -21,7 +22,7 @@ const Scores = () => {
         <FilterTab
           selVal={filter.type}
           onSelect={(e) => {
-            onFilterChanged(e, "type")
+            onFilterChanged(e, "type", filter, updateFilterOption)
           }}
         />
       </div>
@@ -35,11 +36,11 @@ const Scores = () => {
               </p>
               <div className="relative mt-2 flex gap-[2px]">
                 {Array.from({ length: 5 }, (_, index) => {
-                  return <Heart key={index + 1} state="default" />
+                  return <HeartSVG className="h-6 w-6 text-[#E5E7EB]" key={index + 1} />
                 })}
                 <animated.div style={style} className="absolute left-0 top-0 z-10 flex gap-[2px]">
                   {Array.from({ length: 5 }, (_, index) => {
-                    return <Heart key={index + 1} state="active" />
+                    return <HeartSVG className="h-6 w-6 text-[#EA580C]" key={index + 1} />
                   })}
                 </animated.div>
               </div>
@@ -91,29 +92,11 @@ const useFilter = () => {
     type: "DALLAEMFIT",
   })
 
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          if (key in filter) {
-            const newFilterOption = { ...filter }
-            // @ts-ignore
-            delete newFilterOption[key]
-            setFilter(newFilterOption)
-          }
-        } else {
-          setFilter({ ...filter, [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) setFilter({ ...filter, [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) setFilter({ ...filter, [key]: targetParent.value })
-        }
-      }
-    }
+  const updateFilterOption = (newOption: Partial<TScoresType>) => {
+    setFilter((prevOption) => {
+      return { ...prevOption, ...newOption }
+    })
   }
 
-  return { filter, onFilterChanged }
+  return { filter, updateFilterOption }
 }

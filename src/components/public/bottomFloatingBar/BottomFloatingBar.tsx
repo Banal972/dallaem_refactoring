@@ -1,19 +1,22 @@
 "use client"
 
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 import { useEffect, useRef } from "react"
 
-import checkLogin from "@/actions/Auths/checkLogin"
 import cancelMeeting from "@/actions/Gatherings/cancelMeeting"
 import quitMeeting from "@/actions/Gatherings/quitMeeting"
 import ROUTE from "@/constants/route"
 import useJoinGathering from "@/hooks/Gatherings/useJoinGathering"
+import { useToast } from "@/provider/ToastProvider"
 import { IBannerProps } from "@/types/findMeeting/findMeeting"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: IBannerProps) => {
   const ref = useRef<HTMLDivElement>(null)
+  const { openToast } = useToast()
+  const session = useSession()
 
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -32,7 +35,7 @@ const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: I
         queryKey: ["mypage"],
       })
 
-      router.replace(`${ROUTE.GATHERINGS}/${id}?alert=${res}`)
+      openToast(res, "success")
     },
   })
 
@@ -46,8 +49,9 @@ const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: I
         queryKey: ["mypage"],
       })
 
-      if (res) router.replace(`${ROUTE.GATHERINGS}?alert=${res}`)
-      else router.replace(ROUTE.GATHERINGS)
+      if (res) {
+        openToast(res, "success")
+      } else router.replace(ROUTE.GATHERINGS)
     },
   })
 
@@ -69,7 +73,7 @@ const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: I
     cancelMutation.mutate()
   }
   const onClickJoin = async () => {
-    if (await checkLogin()) {
+    if (session.data) {
       joinGathering(id, {
         onSuccess: async (res) => {
           await queryClient.invalidateQueries({ queryKey: ["meetingDetail"] })
@@ -78,12 +82,11 @@ const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: I
           await queryClient.invalidateQueries({
             queryKey: ["mypage"],
           })
-
-          router.replace(`${ROUTE.GATHERINGS}/${id}?alert=${res}`)
+          openToast(res, "success")
         },
       })
     } else {
-      router.replace(`${ROUTE.GATHERINGS}/${id}?alert=${"로그인이 필요합니다."}`)
+      openToast("로그인이 필요합니다.", "error")
     }
   }
 
@@ -93,9 +96,7 @@ const BottomBanner = ({ id, isHost, isJoined, limit, participant, setHeight }: I
 
   const onClickShare = () => {
     navigator.clipboard.writeText(window.location.href)
-    router.replace(`${ROUTE.GATHERINGS}/${id}?alert=클립보드에 복사됐습니다.&type=alert`, {
-      scroll: false,
-    })
+    openToast("클립보드에 복사됐습니다", "success")
   }
 
   useEffect(() => {

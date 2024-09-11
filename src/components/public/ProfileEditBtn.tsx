@@ -1,9 +1,10 @@
 "use client"
 
+import Image from "next/image"
+
 import ROUTE from "@/constants/route"
 import useNav from "@/hooks/useNav"
-
-import Edit from "./img/Edit"
+import EditLargeIMG from "@public/img/edit_large.png"
 
 const ProfileEditBtn = () => {
   const { goPath } = useNav()
@@ -14,10 +15,9 @@ const ProfileEditBtn = () => {
         return goPath(`${ROUTE.MY_PAGE}/edit`)
       }}
       type="button"
-      className="size-8 rounded-full border-none bg-cover bg-no-repeat z-30"
+      className="z-30 size-8 rounded-full border-none bg-cover bg-no-repeat"
     >
-      {" "}
-      <Edit state="large" />
+      <Image width={32} height={32} src={EditLargeIMG.src} alt="EditLargeIMG" />
     </button>
   )
 }

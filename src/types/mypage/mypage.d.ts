@@ -1,15 +1,28 @@
 import { ReactNode } from "react"
 
-import { IGathering } from "@/types/review/filter"
+import { IGathering } from "@/types/review/review"
+import { DataTag, UseQueryOptions } from "@tanstack/react-query"
 
 type TSize = "smallDefault" | "largeDefault" | "largeEdit"
 type TSort = "dateTime" | "registrationEnd" | "joinedAt"
 type TSortOrder = "asc" | "desc"
 type TBoolAndNull = boolean | null
 type TDispatch = ({ type, isReviewed }: IAction) => void
+type UseQueryOptionsCompatible = UseQueryOptions<
+  { data: any; hasMore: boolean },
+  Error,
+  { data: any; hasMore: boolean },
+  {}[]
+> & { initialData?: undefined } & { queryKey: DataTag<{}[], { data: any; hasMore: boolean }> }
 
 interface IHandlerArg {
   type: string
+}
+
+export interface IMyPageDefaultProp {
+  dataFetchingKey: string
+  hasReview: boolean | undefined
+  onClick: (value: boolean) => void
 }
 
 export interface IMyPageLayoutProps {
@@ -103,6 +116,11 @@ export interface IFetchMyPageInfo extends IGetMyMeetings {
 interface IIds {
   id: number
   teamId: string
+}
+
+export interface CustomHydrationBoundaryProp {
+  children: ReactNode
+  options: UseQueryOptionsCompatible
 }
 
 export interface IGetMyPageRes extends IIds, IHandlerArg {

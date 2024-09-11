@@ -47,6 +47,8 @@ const Card = ({
               src={image}
               alt={`모임 이미지 ${teamId} ${id}`}
               fill
+              sizes="(min-width : 640px) 280px"
+              priority
             />
           ) : (
             <div className="absolute bottom-0 left-0 right-0 top-0 bg-gray-500" />

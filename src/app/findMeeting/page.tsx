@@ -1,35 +1,26 @@
 "use client"
 
-import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 
-import checkLogin from "@/actions/Auths/checkLogin"
-import FilterCalendar from "@/components/pages/findMeeting/FilterCalendar/FilterCalendar"
-import FilterSort from "@/components/pages/findMeeting/FilterSort/FilterSort"
+import CreateMeetingBtn from "@/components/pages/findMeeting/CreateMeetingBtn"
 import FilterTab from "@/components/pages/findMeeting/FilterTab/FilterTab"
+import FilterTabs from "@/components/pages/findMeeting/FilterTaps"
 import MeetingList from "@/components/pages/findMeeting/MeetingCard/MeetingList/MeetingList"
-import Filter from "@/components/public/Filter/Filter"
+import ImageHeader from "@/components/public/ImageHeader"
 import ResetFilter from "@/components/public/ResetFilter"
 import Spinner from "@/components/public/Spinner/Spinner"
-import Sort from "@/components/public/icon/dynamicIcon/Sort"
 import CreateMeetingModal from "@/components/public/modal/CreateMeetingModal"
 import LIMIT from "@/constants/limit"
-import { location } from "@/constants/meeting"
-import ROUTE from "@/constants/route"
 import useGetMeetingList from "@/hooks/useGetMeetingList"
-import { IFilterOption, TCustomFilterEvent } from "@/types/findMeeting/findMeeting"
-import headClassIMG from "@public/img/head_class.png"
+import { useToast } from "@/provider/ToastProvider"
+import { FetchFunction, IFilterOption } from "@/types/findMeeting/findMeeting"
+import onFilterChanged from "@/util/onFilterChanged"
 
-const FindMeeting = () => {
-  const initialFilterOption: IFilterOption = {
-    type: "DALLAEMFIT",
-    sortBy: "registrationEnd",
-    sortOrder: "desc",
-    limit: LIMIT,
-  }
+const FindMeetingPage = () => {
+  const { isModalOpen, toggleModal, createMeetingHandler } = useMeeting()
 
   const {
     data,
@@ -42,133 +33,25 @@ const FindMeeting = () => {
     resetFilterOption,
   } = useGetMeetingList(initialFilterOption)
 
-  const [isMeetingModal, setIsMeetingModal] = useState(false)
+  const { ref } = useNextPage(hasNextPage, fetchNextPage)
 
-  const { ref, inView } = useInView()
-
-  const router = useRouter()
-
-  const onFilterChanged = (e: TCustomFilterEvent, key: string) => {
-    if (key) {
-      if (typeof e === "string") {
-        if (e === "") {
-          const newFilterOption = { ...filterOption }
-          // @ts-ignore
-          delete newFilterOption[key]
-          updateFilterOption(newFilterOption)
-        } else {
-          updateFilterOption({ [key]: e })
-        }
-      } else {
-        const target = e.target as HTMLButtonElement
-        if (target.value) updateFilterOption({ [key]: target.value })
-        else if (target.parentElement && target.parentElement.tagName.toLowerCase() === "button") {
-          const targetParent = target.parentElement as HTMLButtonElement
-          if (targetParent.value) updateFilterOption({ [key]: targetParent.value })
-        }
-      }
-    }
-  }
-
-  const onClickCreateMeeting = async () => {
-    if (await checkLogin()) setIsMeetingModal(!isMeetingModal)
-    else router.push(`${ROUTE.SIGNIN}&alert=로그인 후 이용이 가능합니다.`)
-  }
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage()
-    }
-  }, [fetchNextPage, hasNextPage, inView])
+  const hasData = data && data.pages[0].length === 0
 
   return (
     <>
       <div className="m-6 flex min-h-screen flex-col rounded-[20px] bg-white px-6 py-14 md:m-12 md:px-16">
-        <div className="flex-none">
-          <div className="flex items-center gap-4">
-            <div className="size-[72px] flex-none">
-              <Image width={72} height={72} src={headClassIMG.src} alt="headClassIMG" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-700">함께 할 사람이 없나요?</p>
-              <h4 className="mt-2 text-lg font-semibold leading-8 text-gray-900 sm:text-2xl">
-                지금 모임에 참여해보세요
-              </h4>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative mt-12 flex justify-between">
+        <ImageHeader sort="meeting" mainText={mainText} subText={subText} />
+        <div className="relative mt-8 flex justify-between">
           <FilterTab
             selVal={filterOption.type}
             onSelect={(e) => {
-              onFilterChanged(e, "type")
+              onFilterChanged(e, "type", filterOption, updateFilterOption)
             }}
           />
-          <button
-            type="button"
-            className="absolute right-0 top-0 h-[34px] w-[85px] rounded-lg border border-primary bg-primary text-xs font-semibold leading-6 text-white transition-colors hover:bg-white hover:text-primary sm:text-sm md:h-[44px] md:w-[115px] md:rounded-xl md:text-base"
-            onClick={onClickCreateMeeting}
-          >
-            모임 만들기
-          </button>
+          <CreateMeetingBtn onClick={createMeetingHandler} />
         </div>
-
-        <div className="mb-6 mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-primary pt-4">
-          <div className="flex gap-2">
-            <Filter
-              data={location}
-              placeholder="지역 선택"
-              onSelect={(e) => {
-                onFilterChanged(e, "location")
-              }}
-              selVal={filterOption.location}
-            />
-            <FilterCalendar
-              placeholder="날짜 선택"
-              selVal={filterOption.date}
-              onChange={(e) => {
-                onFilterChanged(e, "date")
-              }}
-            />
-          </div>
-
-          <div className="ml-auto flex gap-2">
-            <button
-              aria-label="sortButton"
-              type="button"
-              className={`group flex size-9 cursor-pointer items-center justify-center rounded-xl border-2 transition-colors ${filterOption.sortOrder === "desc" ? "border-gray-100 bg-white" : "border-gray-100 bg-black"}`}
-              onClick={() => {
-                if (filterOption.sortOrder === "desc") {
-                  return updateFilterOption({
-                    sortOrder: "asc",
-                  })
-                }
-                return updateFilterOption({
-                  sortOrder: "desc",
-                })
-              }}
-            >
-              <Sort
-                state="default"
-                className={`transition-colors ${filterOption.sortOrder === "asc" && "text-white"} `}
-              />
-            </button>
-            <FilterSort
-              onSelect={(e) => {
-                onFilterChanged(e, "sortBy")
-              }}
-              selVal={filterOption.sortBy}
-            />
-          </div>
-        </div>
-
-        {!data ||
-          (data.pages[0].length === 0 && (
-            <p className="flex w-full flex-1 items-center justify-center text-sm text-gray-500">
-              첫 모임을 등록해주세요! 🖐️
-            </p>
-          ))}
+        <FilterTabs filterOption={filterOption} updateFilterOption={updateFilterOption} />
+        {hasData && <DefaultValue />}
 
         <MeetingList data={data ?? null} isLoading={isLoading} />
 
@@ -179,25 +62,81 @@ const FindMeeting = () => {
         ) : (
           <div ref={ref} />
         )}
-        {isMeetingModal && (
+        {isModalOpen && (
           <CreateMeetingModal
-            changeState={() => {
-              setIsMeetingModal(!isMeetingModal)
-            }}
+            changeState={toggleModal}
             aria-haspopup="true"
-            aria-pressed={isMeetingModal}
+            aria-pressed={isModalOpen}
           />
         )}
       </div>
-
       <ResetFilter
-        isVisible={
-          Object.entries(initialFilterOption).toString() !== Object.entries(filterOption).toString()
-        }
+        isVisible={hasChangedOption(initialFilterOption, filterOption)}
         onClick={resetFilterOption}
       />
     </>
   )
 }
 
-export default FindMeeting
+export default FindMeetingPage
+
+const mainText = "지금 모임에 참여해보세요"
+const subText = "함께 할 사람이 없나요?"
+
+const initialFilterOption: IFilterOption = {
+  type: "DALLAEMFIT",
+  sortBy: "registrationEnd",
+  sortOrder: "desc",
+  limit: LIMIT,
+}
+
+const useMeeting = () => {
+  const { openToast } = useToast()
+  const session = useSession()
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const createMeetingHandler = () => {
+    if (session.data) {
+      toggleModal()
+    } else {
+      openToast("로그인 후 이용이 가능합니다.", "success")
+    }
+  }
+
+  return { isModalOpen, toggleModal, createMeetingHandler }
+}
+
+const useNextPage = (hasNext: boolean, fetchNext: FetchFunction) => {
+  const { ref, inView } = useInView()
+
+  useEffect(() => {
+    if (inView && hasNext) {
+      fetchNext()
+    }
+  }, [fetchNext, hasNext, inView])
+
+  return { ref }
+}
+
+const getStringifiedOption = (option: IFilterOption) => {
+  return Object.entries(option).toString()
+}
+
+const hasChangedOption = (initialOption: IFilterOption, changedOption: IFilterOption) => {
+  const hasChangedOptions =
+    getStringifiedOption(initialOption) !== getStringifiedOption(changedOption)
+  return hasChangedOptions
+}
+
+const DefaultValue = () => {
+  return (
+    <p className="flex w-full flex-1 items-center justify-center text-sm text-gray-500">
+      첫 모임을 등록해주세요! 🖐️
+    </p>
+  )
+}
