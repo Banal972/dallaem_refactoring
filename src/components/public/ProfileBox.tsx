@@ -1,9 +1,10 @@
+import Image from "next/image"
+
 import getUserInfo from "@/actions/Auths/getUserInfo"
 
 import LogoutBtn from "./LogoutBtn"
 import ProfileEditBtn from "./ProfileEditBtn"
 import Profile from "./img/Profile"
-import ProfileBG from "./img/ProfileBG"
 
 const ProfileBox = async () => {
   const userInfo = await getUserInfo()
@@ -14,7 +15,14 @@ const ProfileBox = async () => {
         <h3 className="z-10 text-lg font-semibold text-gray-900">내 프로필</h3>
         <ProfileEditBtn />
       </div>
-      <ProfileBG className="absolute right-5 top-[19px] h-[47px] w-[158px] sm:right-20" />
+      <Image
+        src="/img/profile_bg.png"
+        width={158}
+        height={47}
+        alt="ProfileBG"
+        className="absolute right-5 top-[19px] h-[47px] w-[158px] sm:right-20"
+        priority
+      />
       <div className="flex px-3">
         <div className="relative -top-3 size-14 shrink-0 rounded-full">
           <Profile profileImg={userInfo.image} state="largeDefault" />

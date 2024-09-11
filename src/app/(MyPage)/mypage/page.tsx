@@ -1,6 +1,6 @@
 import MyPageInfoTap from "@/components/pages/mypage/MyPageInfoTap"
 import ProfileBox from "@/components/public/ProfileBox"
-import CustomHydrationBoundary from "@/hooks/CustomHydrationBoundary.tsx"
+import CustomHydrationBoundary from "@/hooks/mypage/CustomHydrationBoundary.tsx"
 import MyPagePrefetchOption from "@/hooks/mypage/myPageQuery"
 
 const MyPage = () => {
