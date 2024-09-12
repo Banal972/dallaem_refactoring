@@ -11,7 +11,7 @@
 
 ## 배포 주소
 
-> **개발 버전** : [https://dallaem-publish-2w1gkvjve-jeongheonks-projects.vercel.app/](https://dallaem-publish-2w1gkvjve-jeongheonks-projects.vercel.app/) <br />
+> **개발 버전** : [https://dallaem-publish.vercel.app/](https://dallaem-publish.vercel.app/) <br />
 > **배포 버전** : [https://dallaem-refactoring-z35o.vercel.app/](https://dallaem-refactoring-z35o.vercel.app/) <br />
 
 개발팀 소개 
