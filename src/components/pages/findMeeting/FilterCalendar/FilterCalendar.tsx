@@ -4,9 +4,9 @@ import { KeyboardEvent, useRef, useState } from "react"
 import { Value } from "react-calendar/dist/cjs/shared/types"
 
 import Calendars from "@/components/public/Calendars/Calendars"
-import Arrow from "@/components/public/icon/dynamicIcon/Arrow"
 import { IFilterCalendarProps } from "@/types/findMeeting/findMeeting"
 import useOutsideClick from "@/util/useOutsideClick"
+import ArrowSVG from "@public/icon/dynamicIcon/arrow.svg"
 import dayjs from "dayjs"
 
 /**
@@ -53,7 +53,7 @@ const FilterCalendar = (props: IFilterCalendarProps) => {
         onKeyDown={onLabelKeyDownHandler}
       >
         <span className="flex items-center whitespace-nowrap">{displayDateValue}</span>
-        <Arrow className="w-[15px]" state={selVal ? "inverseDown" : "defaultDown"} />
+        <ArrowSVG className={`h-6 w-[15px] ${selVal ? "text-[#F9FAFB]" : "text-[#1F2937]"}`} />
       </div>
       <div
         ref={filterCalendarRef}

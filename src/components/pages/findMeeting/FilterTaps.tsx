@@ -1,9 +1,9 @@
 import FilterSort from "@/components/pages/findMeeting/FilterSort/FilterSort"
 import Filter from "@/components/public/Filter/Filter"
-import Sort from "@/components/public/icon/dynamicIcon/Sort"
 import { location } from "@/constants/meeting"
 import { IFilterOption } from "@/types/findMeeting/findMeeting"
 import onFilterChanged from "@/util/onFilterChanged"
+import SortSVG from "@public/icon/dynamicIcon/sort.svg"
 
 import FilterCalendar from "./FilterCalendar/FilterCalendar"
 
@@ -45,7 +45,9 @@ const FilterTabs = ({ filterOption, updateFilterOption }: FilterTabProp) => {
             return updateFilterOption({ sortOrder })
           }}
         >
-          <Sort state="default" className={`transition-colors ${isDesc || "text-white"} `} />
+          <SortSVG
+            className={`h-6 w-6 transition-colors ${isDesc ? "text-[#111827]" : "text-white"} `}
+          />
         </button>
         <FilterSort
           onSelect={(e) => {

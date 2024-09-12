@@ -2,9 +2,9 @@
 
 import { KeyboardEvent, MouseEvent, useEffect, useRef } from "react"
 
-import Dalaemfit from "@/components/public/icon/staticIcon/Dalaemfit"
-import Workation from "@/components/public/icon/staticIcon/Workation"
 import { IFilterTabProps } from "@/types/findMeeting/findMeeting"
+import DalaemfitSVG from "@public/icon/staticIcon/dalaemfit.svg"
+import WorkationSVG from "@public/icon/staticIcon/workation.svg"
 
 /**
  * 모임 찾기에서 달램핏, 워케이션 구분 부분
@@ -76,8 +76,8 @@ const FilterTab = (props: IFilterTabProps) => {
             tabIndex={0}
           >
             달램핏
-            <Dalaemfit
-              className={`${isDallemfit ? "text-gray-900" : "text-gray-400"} pointer-events-none`}
+            <DalaemfitSVG
+              className={`${isDallemfit ? "text-gray-900" : "text-gray-400"} pointer-events-none h-8 w-8 text-[#111827]`}
             />
           </button>
           <button
@@ -89,8 +89,8 @@ const FilterTab = (props: IFilterTabProps) => {
             tabIndex={0}
           >
             워케이션
-            <Workation
-              className={`${!isDallemfit ? "text-gray-900" : "text-gray-400"} pointer-events-none`}
+            <WorkationSVG
+              className={`${!isDallemfit ? "text-gray-900" : "text-gray-400"} pointer-events-none h-8 w-8 text-[#111827]`}
             />
           </button>
         </div>

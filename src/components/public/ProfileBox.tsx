@@ -4,7 +4,6 @@ import getUserInfo from "@/actions/Auths/getUserInfo"
 
 import LogoutBtn from "./LogoutBtn"
 import ProfileEditBtn from "./ProfileEditBtn"
-import Profile from "./img/Profile"
 
 const ProfileBox = async () => {
   const userInfo = await getUserInfo()
@@ -25,7 +24,12 @@ const ProfileBox = async () => {
       />
       <div className="flex px-3">
         <div className="relative -top-3 size-14 shrink-0 rounded-full">
-          <Profile profileImg={userInfo.image} state="largeDefault" />
+          <Image
+            src="/img/profile_large_default.png"
+            width={56}
+            height={56}
+            alt="ProfileLargeDefaultIMG"
+          />
         </div>
         <div className="shrink-1 w-3/4 px-2 py-3">
           <div className="mb-1 flex items-center gap-3">

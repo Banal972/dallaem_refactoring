@@ -3,9 +3,9 @@
 import { KeyboardEvent, useEffect, useRef } from "react"
 
 import CreateMeetingForm from "@/components/pages/findMeeting/CreateMeeting/CreateMeetingForm"
-import X from "@/components/public/icon/staticIcon/X"
 import { allowScroll, preventScroll } from "@/util/modal"
 import useOutsideClick from "@/util/useOutsideClick"
+import XSVG from "@public/icon/staticIcon/X.svg"
 
 import "./styles.scss"
 
@@ -49,7 +49,7 @@ const CreateMeetingModal = ({ changeState }: { changeState: () => void }) => {
             className="block"
             aria-label="Close"
           >
-            <X />
+            <XSVG className="h-6 w-6 text-[#111827]" />
           </button>
         </div>
         <CreateMeetingForm changeState={changeState} />

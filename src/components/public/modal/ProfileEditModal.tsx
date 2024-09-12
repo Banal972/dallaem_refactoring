@@ -10,7 +10,6 @@ import CancelButton from "@/components/pages/mypage/CancelButton"
 import { IFile, IProfileEditModalProps } from "@/types/mypage/mypage"
 
 import CloseBtn from "../CloseBtn"
-import Profile from "../img/Profile"
 
 const IMAGE_SIZE_LIMIT = 5242880
 
@@ -157,7 +156,12 @@ const ProfileEditModal = ({ companyName, image = "" }: IProfileEditModalProps) =
           {imgSrc ? (
             <Image src={imgSrc} alt="profile image" className="rounded-full" fill />
           ) : (
-            <Profile state="largeEdit" />
+            <Image
+              src="/img/profile_large_edit.png"
+              width={56}
+              height={56}
+              alt="ProfileLargeEditIMG"
+            />
           )}
           <input hidden id="image" name="image" type="file" onChange={changeFileHandler} />
         </label>

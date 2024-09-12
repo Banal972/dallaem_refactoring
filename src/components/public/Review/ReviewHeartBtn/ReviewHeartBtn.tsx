@@ -1,6 +1,6 @@
 "use client"
 
-import Heart from "@/components/public/icon/dynamicIcon/Heart"
+import HeartSVG from "@public/icon/dynamicIcon/heart.svg"
 
 import styles from "./ReviewHeartBtn.module.scss"
 
@@ -32,11 +32,10 @@ const ReviewHeartBtn = ({ value, setter }: IReviewHeartBtnProps) => {
             }}
             aria-label={`Heart ${index + 1}`}
           >
-            <Heart state="default" />
-            <Heart
-              state="active"
+            <HeartSVG className="h-6 w-6 text-[#E5E7EB]" />
+            <HeartSVG
+              className={`h-6 w-6 text-[#EA580C] ${getHeartClass(index)}`}
               style={{ transitionDelay: `${index * 100}ms` }}
-              className={`${getHeartClass(index)}`}
             />
           </button>
         )

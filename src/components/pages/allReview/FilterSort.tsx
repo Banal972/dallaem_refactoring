@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 
-import Sort from "@/components/public/icon/dynamicIcon/Sort"
 import { IFilterSortProps } from "@/types/review/review"
+import SortSVG from "@public/icon/dynamicIcon/sort.svg"
 
 const sortOrder = [
   {
@@ -63,7 +63,7 @@ const FilterSort = (props: IFilterSortProps) => {
         onClick={onLabelClickHandler}
         onKeyDown={onLabelKeyDownHandler}
       >
-        <Sort state="default" />
+        <SortSVG className="h-6 w-6 text-[#111827]" />
         <span className="flex items-center whitespace-nowrap max-sm:hidden">
           {selVal && getSortType(selVal)}
         </span>

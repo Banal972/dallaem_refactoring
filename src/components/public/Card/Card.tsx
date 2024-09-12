@@ -1,10 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import Checkbox from "@/components/public/icon/dynamicIcon/Checkbox"
-import Person from "@/components/public/icon/staticIcon/Person"
 import { MyCardProps } from "@/types/findMeeting/findMeeting"
 import { formatToDate, isCurrentDateAfter } from "@/util/days"
+import CheckboxSVG from "@public/icon/dynamicIcon/checkbox.svg"
+import PersonSVG from "@public/icon/staticIcon/person.svg"
 
 interface ICardProps extends MyCardProps {
   registrationEnd: string
@@ -63,7 +63,7 @@ const Card = ({
                 <div className={`bg-orange-100 text-primary ${ButtonStyle}`}>이용 예정</div>
                 {participantCount >= 5 ? (
                   <div className={`border border-orange-100 text-orange-500 ${ButtonStyle}`}>
-                    <Checkbox state="active" /> 개설확정
+                    <CheckboxSVG className="h-6 w-6 text-[#EA580C]" /> 개설확정
                   </div>
                 ) : (
                   <div className={`border border-gray-200 text-gray-500 ${ButtonStyle}`}>
@@ -84,7 +84,7 @@ const Card = ({
           <div className="flex gap-3 text-sm font-medium leading-5 text-gray-700">
             <p>{formatToDate({ date: dateTime, format: "M월 D일 · HH:mm" })}</p>
             <div className="flex items-center">
-              <Person />
+              <PersonSVG className="h-4 w-4 text-[#111827]" />
               <p className="test-sm font-medium leading-5">
                 {participantCount}/{capacity}
               </p>

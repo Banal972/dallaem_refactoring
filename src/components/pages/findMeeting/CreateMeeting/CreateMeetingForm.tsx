@@ -7,13 +7,13 @@ import { Value } from "react-calendar/dist/cjs/shared/types"
 
 import Calendars from "@/components/public/Calendars/Calendars"
 import Button from "@/components/public/button/Button"
-import Arrow from "@/components/public/icon/dynamicIcon/Arrow"
 import CompleteSignUpModal from "@/components/public/modal/CompleteSignUpModal"
 import { location } from "@/constants/meeting"
 import useCreateGathering from "@/hooks/Gatherings/useCreateGathering"
 import useJoinGathering from "@/hooks/Gatherings/useJoinGathering"
 import { ILabelProps, IMeetingDataState } from "@/types/findMeeting/findMeeting"
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react"
+import ArrowSVG from "@public/icon/dynamicIcon/arrow.svg"
 import { useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
 
@@ -211,7 +211,7 @@ const CreateMeetingForm = ({ changeState }: { changeState: () => void }) => {
               className={`relative box-border w-full rounded-xl bg-gray-50 px-[16px] py-[10px] text-left text-sm font-medium leading-5 sm:text-base sm:leading-6 ${meetingData.location ? "text-gray-900" : "text-gray-400"}`}
             >
               {meetingData.location ? meetingData.location : "장소를 선택해주세요"}
-              <Arrow state="defaultDown" className="absolute right-4 top-1/2 -translate-y-1/2" />
+              <ArrowSVG className="absolute right-4 top-1/2 h-6 w-6 -translate-y-1/2 text-[#1F2937]" />
             </ListboxButton>
             <ListboxOptions
               transition

@@ -22,8 +22,9 @@ const Home = () => {
     staleTime: 1000,
     gcTime: 1000,
   })
-  const meetingQueryClient = getQueryClient()
+
   const options = allReviewOptions({})
+  const meetingQueryClient = getQueryClient()
   const allReviewQueryClient = getQueryClient()
 
   const hasNotDefaultData = !meetingQueryClient.getQueryData(meetingOptions.queryKey)
@@ -48,7 +49,7 @@ const Home = () => {
         </div>
         <div className="mt-12 rounded-[20px] bg-white px-6 py-12 md:px-10 lg:px-12">
           <h1 className="text-xl font-bold md:text-2xl">모임 이용자들의 실제 후기</h1>
-          <div className="mt-10">
+          <div className="mt-7 md:mt-10">
             <HydrationBoundary state={dehydrate(allReviewQueryClient)}>
               <MainReview />
             </HydrationBoundary>
