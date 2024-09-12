@@ -4,8 +4,7 @@ import { KeyboardEvent, MouseEvent, useRef, useState } from "react"
 
 import { IFilterProps } from "@/types/findMeeting/findMeeting"
 import useOutsideClick from "@/util/useOutsideClick"
-
-import Arrow from "../icon/dynamicIcon/Arrow"
+import ArrowSVG from "@public/icon/dynamicIcon/arrow.svg"
 
 /**
  * @interface IFilterProps
@@ -55,7 +54,7 @@ const Filter = (props: IFilterProps) => {
         onKeyDown={onLabelKeyDownHandler}
       >
         <span className="flex items-center whitespace-nowrap">{selVal || placeholder}</span>
-        <Arrow className="w-[15px]" state={selVal ? "inverseDown" : "defaultDown"} />
+        <ArrowSVG className={`h-6 w-[15px] ${selVal ? "text-[#F9FAFB]" : "text-[#1F2937]"}`} />
       </div>
       <div
         ref={filterRef}

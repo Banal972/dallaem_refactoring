@@ -13,13 +13,13 @@ import Filter from "@/components/public/Filter/Filter"
 import ResetFilter from "@/components/public/ResetFilter"
 import MeetingCardSkeleton from "@/components/public/Skeleton/MeetingCardSkeleton"
 import Spinner from "@/components/public/Spinner/Spinner"
-import Sort from "@/components/public/icon/dynamicIcon/Sort"
 import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import useWishList from "@/hooks/useWishList"
 import { IFilterOption } from "@/types/findMeeting/findMeeting"
 import { isCurrentDateAfter } from "@/util/days"
 import onFilterChanged from "@/util/onFilterChanged"
+import SortSVG from "@public/icon/dynamicIcon/sort.svg"
 
 const List = () => {
   const filterOptions: IFilterOption = {
@@ -81,7 +81,7 @@ const List = () => {
               className={`group flex size-9 cursor-pointer items-center justify-center rounded-xl border-2 transition-colors ${filter.sortOrder === "desc" ? "border-gray-100 bg-white" : "border-gray-100 bg-black"}`}
               onClick={onSortOrderHandler}
             >
-              <Sort
+              <SortSVG
                 state="default"
                 className={`transition-colors ${filter.sortOrder === "asc" && "text-white"} `}
               />
