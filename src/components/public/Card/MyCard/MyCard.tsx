@@ -1,9 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import Person from "@/components/public/icon/staticIcon/Person"
 import { MyCardProps } from "@/types/findMeeting/findMeeting"
 import { formatToDate } from "@/util/days"
+import PersonSVG from "@public/icon/staticIcon/person.svg"
 
 /**
  * @interface ICardProps
@@ -53,7 +53,7 @@ const MyCard = ({
           <div className="flex gap-3 text-sm font-medium leading-5 text-gray-700">
             <p>{formatToDate({ date: dateTime, format: "M월 D일 · HH:mm" })}</p>
             <div className="flex items-center">
-              <Person />
+              <PersonSVG className="h-4 w-4 text-[#111827]" />
               <p className="test-sm font-medium leading-5">
                 {participantCount}/{capacity}
               </p>

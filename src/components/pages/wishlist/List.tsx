@@ -82,8 +82,7 @@ const List = () => {
               onClick={onSortOrderHandler}
             >
               <SortSVG
-                state="default"
-                className={`transition-colors ${filter.sortOrder === "asc" && "text-white"} `}
+                className={`h-6 w-6 transition-colors ${filter.sortOrder === "asc" ? "text-white" : "text-[#111827]"} `}
               />
             </button>
             <FilterSort

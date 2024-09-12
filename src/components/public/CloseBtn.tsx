@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 
-import X from "./icon/staticIcon/X"
+import XSVG from "@public/icon/staticIcon/X.svg"
 
 const CloseBtn = () => {
   const route = useRouter()
@@ -12,7 +12,7 @@ const CloseBtn = () => {
   }
   return (
     <button type="button" onClick={handleClick} className="block" aria-label="Close">
-      <X />
+      <XSVG className="h-6 w-6 text-[#111827]" />
     </button>
   )
 }

@@ -1,7 +1,7 @@
 import Image from "next/image"
 
-import Heart from "@/components/public/icon/dynamicIcon/Heart"
 import { IReviewProps } from "@/types/review/review"
+import HeartSVG from "@public/icon/dynamicIcon/heart.svg"
 import dayjs from "dayjs"
 
 /**
@@ -35,7 +35,9 @@ const Review = ({ score, comment, createdAt, gathering, user, isImage }: IReview
             .map((_, index) => {
               return (
                 <div data-testid="scoreHeart" key={`score-${index + 1}`}>
-                  <Heart state={index < score ? "active" : "default"} />
+                  <HeartSVG
+                    className={`h-6 w-6 ${index < score ? "text-[#EA580C]" : "text-[#E5E7EB]"}`}
+                  />
                 </div>
               )
             })}
