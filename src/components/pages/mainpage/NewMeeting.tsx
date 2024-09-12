@@ -75,10 +75,10 @@ const NewMeeting = () => {
           <div>
             <MainCardSkeleton />
           </div>
-          <div className="hidden md:block">
+          <div>
             <MainCardSkeleton />
           </div>
-          <div className="hidden xl:block">
+          <div className="hidden md:block">
             <MainCardSkeleton />
           </div>
         </div>
@@ -169,7 +169,7 @@ const NewMeeting = () => {
           </div>
         </div>
       </div>
-      <div className="mt-10">{render()}</div>
+      <div className="mt-7 md:mt-10">{render()}</div>
     </>
   )
 }
