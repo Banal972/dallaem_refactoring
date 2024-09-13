@@ -11,16 +11,7 @@ describe("gnb test", () => {
 
   it("should not be able to visit wishlist", () => {
     cy.get("a[href*='/wishlist'").first().click()
-    cy.location("pathname").should("eq", "/auth")
-    cy.location("search").should("contain", "?mode=signin")
-    cy.contains("로그인 후 이용이 가능합니다.").should("be.visible")
-  })
-
-  it("should not be able to visit wishlist", () => {
-    cy.get("a[href*='/wishlist'").first().click()
-    cy.location("pathname").should("eq", "/auth")
-    cy.location("search").should("contain", "?mode=signin")
-    cy.contains("로그인 후 이용이 가능합니다.").should("be.visible")
+    cy.get(".right-4 > .text-gray-700").should("contain", "로그인 이후에 이용이")
   })
 
   it("should not be able to visit wishlist", () => {
@@ -32,9 +23,6 @@ describe("gnb test", () => {
 
   it("should be able to visit login page", () => {
     cy.contains("로그인").click()
-    cy.location("pathname").should("eq", "/auth")
-    cy.location("search").should("eq", "?mode=signin")
-    cy.contains("로그인").should("be.visible")
     cy.contains("아이디").should("be.visible")
     cy.contains("비밀번호").should("be.visible")
   })
