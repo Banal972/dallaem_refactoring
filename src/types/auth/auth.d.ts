@@ -1,6 +1,20 @@
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, ReactNode, SetStateAction } from "react"
 
 export type TIsLogin = boolean
+
+export interface IAuthLayoutProps {
+  children: ReactNode
+}
+
+export interface IButtonProps extends IAuthLayoutProps {
+  className?: string
+  borderStyle: "solid" | "outlined"
+  type?: "submit" | "reset" | "button"
+  disabled?: boolean
+  onClick?: () => void
+}
+
+export interface IGetClassesProps extends Pick<IButtonProps, "disabled" | "borderStyle"> {}
 
 export interface PasswordVisibility {
   showPwd: boolean
