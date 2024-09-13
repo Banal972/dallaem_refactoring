@@ -1,32 +1,17 @@
 import Image from "next/image"
 
-import { Dispatch, SetStateAction, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import Input from "@/components/pages/auth/Modal/Atoms/Input"
 import VerifyBtn from "@/components/pages/auth/Modal/Atoms/VerifyBtn"
 import { EmailRagex, PasswordRagex } from "@/constants/Regex"
 import usePostSignup from "@/hooks/Auth/usePostSignup"
-import { PasswordVisibility } from "@/types/auth/auth"
+import { ISignModalProps, PasswordVisibility } from "@/types/auth/auth"
 
-const SignUpModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>> }) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm()
+const SignUpModal = ({ setIsStep }: ISignModalProps) => {
   const { isShowPassword, onShowPwdHanlder } = useShowPwd()
-  const [error, setError] = useState("")
-  const { mutate } = usePostSignup(setError, setIsStep)
-
-  const onSubmit = handleSubmit((data) => {
-    const { name, email, companyName, password, verifyPassword } = data
-    if (password !== verifyPassword) {
-      setError("비밀번호가 서로 다릅니다.")
-      return
-    }
-    mutate({ name, email, companyName, password })
-  })
+  const { register, errors, error, onSubmit } = useSubmit({ setIsStep })
 
   return (
     <>
@@ -144,6 +129,28 @@ const SignUpModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>
 }
 
 export default SignUpModal
+
+const useSubmit = ({ setIsStep }: ISignModalProps) => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm()
+
+  const [error, setError] = useState("")
+  const { mutate } = usePostSignup(setError, setIsStep)
+
+  const onSubmit = handleSubmit((data) => {
+    const { name, email, companyName, password, verifyPassword } = data
+    if (password !== verifyPassword) {
+      setError("비밀번호가 서로 다릅니다.")
+      return
+    }
+    mutate({ name, email, companyName, password })
+  })
+
+  return { register, errors, error, onSubmit }
+}
 
 const useShowPwd = () => {
   const [isShowPassword, setIsShowPassword] = useState<PasswordVisibility>({

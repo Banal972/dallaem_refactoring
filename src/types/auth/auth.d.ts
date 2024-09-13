@@ -1,6 +1,6 @@
-import { ReactNode } from "react"
+import { Dispatch, SetStateAction } from "react"
 
-export interface IAuthPageProps {
+/* export interface IAuthPageProps {
   searchParams: { mode?: string }
 }
 
@@ -51,9 +51,11 @@ export interface IEmailExists extends IMessage {
   code: "EMAIL_EXISTS"
 }
 
-export type TSignupResponse = IEmailExists | IValidationError | IMessage
+export type TSignupResponse = IEmailExists | IValidationError | IMessage */
 
 // 리팩토링 후
+
+export type TIsLogin = boolean
 
 export interface PasswordVisibility {
   showPwd: boolean
@@ -72,4 +74,22 @@ export declare module "@auth/core/jwt" {
   interface JWT {
     accessToken: string
   }
+}
+
+export interface IAuthModalProps {
+  isLogin: TIsLogin
+  closeLoginHandler: () => void
+}
+
+export interface IUseAuthModalAni {
+  isLogin: TIsLogin
+  setIsStep: Dispatch<SetStateAction<number>>
+}
+
+export interface ISignModalProps {
+  setIsStep: Dispatch<SetStateAction<number>>
+}
+
+export interface ICompleteSignUpModalProps {
+  onClick: () => void
 }

@@ -5,35 +5,13 @@ import { useState } from "react"
 import CompleteSignUpModal from "@/components/pages/auth/Modal/CompleteSignUpModal"
 import LoginModal from "@/components/pages/auth/Modal/LoginModal"
 import SignUpModal from "@/components/pages/auth/Modal/SignUpModal"
+import { IAuthModalProps, IUseAuthModalAni } from "@/types/auth/auth"
 import { animated, useChain, useSpring, useSpringRef, useTransition } from "@react-spring/web"
 
-interface IAuthModal {
-  isLogin: boolean
-  closeLoginHandler: () => void
-}
-
-const AuthModal = ({ isLogin, closeLoginHandler }: IAuthModal) => {
+const AuthModal = ({ isLogin, closeLoginHandler }: IAuthModalProps) => {
   const [isStep, setIsStep] = useState(0)
 
-  const transitionsRef = useSpringRef()
-  const transitions = useTransition(isLogin, {
-    ref: transitionsRef,
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    onDestroyed: () => {
-      setIsStep(0)
-    },
-  })
-
-  const springsRef = useSpringRef()
-  const springs = useSpring({
-    ref: springsRef,
-    from: { y: "-35%", x: "-50%", opacity: 0 },
-    to: { y: isLogin ? "-50%" : "-35%", x: "-50%", opacity: isLogin ? 1 : 0 },
-  })
-
-  useChain(isLogin ? [transitionsRef, springsRef] : [springsRef, transitionsRef], [0, 0.1])
+  const { transitions, springs } = useAuthModalAni({ isLogin, setIsStep })
 
   return transitions((style, item) => {
     return (
@@ -78,3 +56,26 @@ const AuthModal = ({ isLogin, closeLoginHandler }: IAuthModal) => {
 }
 
 export default AuthModal
+
+const useAuthModalAni = ({ isLogin, setIsStep }: IUseAuthModalAni) => {
+  const transitionsRef = useSpringRef()
+  const transitions = useTransition(isLogin, {
+    ref: transitionsRef,
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    onDestroyed: () => {
+      setIsStep(0)
+    },
+  })
+  const springsRef = useSpringRef()
+  const springs = useSpring({
+    ref: springsRef,
+    from: { y: "-35%", x: "-50%", opacity: 0 },
+    to: { y: isLogin ? "-50%" : "-35%", x: "-50%", opacity: isLogin ? 1 : 0 },
+  })
+
+  useChain(isLogin ? [transitionsRef, springsRef] : [springsRef, transitionsRef], [0, 0.1])
+
+  return { transitions, springs }
+}

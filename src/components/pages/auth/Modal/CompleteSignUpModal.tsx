@@ -1,4 +1,6 @@
-const CompleteSignUpModal = ({ onClick }: { onClick: () => void }) => {
+import { ICompleteSignUpModalProps } from "@/types/auth/auth"
+
+const CompleteSignUpModal = ({ onClick }: ICompleteSignUpModalProps) => {
   return (
     <div className="py-0">
       <p className="text-center">가입이 완료되었습니다.</p>
