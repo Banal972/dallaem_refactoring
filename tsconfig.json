@@ -19,11 +19,10 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@public/*": ["./public/*"],
-      "@mocks/*": ["./__mocks__/*"]
+      "@public/*": ["./public/*"]
     },
     "forceConsistentCasingInFileNames": true,
-    "types": ["jest"]
+    "types": ["cypress"]
   },
   "include": [
     "postcss.config.mjs",
@@ -34,7 +33,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "__mocks__/svgrMock.jsx",
-    "jest.setup.js"
+    "cypress.config.ts",
+    "cypress/**/*.tsx",
+    "cypress"
   ],
-  "exclude": ["node_modules", "cypress.config.ts", "cypress/**/*.tsx", "cypress"]
+  "exclude": ["node_modules"]
 }
