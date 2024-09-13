@@ -38,68 +38,6 @@ const NewMeeting = () => {
 
 export default NewMeeting
 
-const useSwiperOptions = ({ data }: { data?: InfiniteData<IMeetingData[], unknown> }) => {
-  const dotUl = useRef<HTMLUListElement>(null)
-  const [realIndex, setRealIndex] = useState(1)
-  const [snapLength, setSnapLength] = useState(1)
-  const [swiperSetting, setSwiperSetting] = useState<SwiperProps | null>(null)
-
-  useEffect(() => {
-    if (!swiperSetting && data) {
-      setSwiperSetting({
-        speed: 800,
-        slidesPerView: 1,
-        slidesPerGroup: 1,
-        spaceBetween: 30,
-        loop: true,
-        breakpoints: {
-          769: {
-            slidesPerView: 2,
-            slidesPerGroup: 2,
-          },
-          1280: {
-            slidesPerView: 3,
-            slidesPerGroup: 3,
-          },
-        },
-        autoplay: {
-          delay: 8000,
-          pauseOnMouseEnter: true,
-        },
-        pagination: {
-          el: dotUl.current,
-          clickable: true,
-          renderBullet: (_, className: string) => {
-            return `<li class="${className}"/>`
-          },
-        },
-        modules: [Pagination, Autoplay],
-        onSlideChange: (swiper: SwiperCore) => {
-          const slidesPerGroup = swiper.params.slidesPerGroup || 0
-          const snapL = swiper.snapGrid.length
-          setRealIndex(swiper.realIndex / slidesPerGroup + 1)
-          setSnapLength(snapL)
-        },
-      })
-    }
-  }, [swiperSetting, data])
-
-  return { realIndex, snapLength, dotUl, swiperSetting }
-}
-
-const useInfiniteMeeting = () => {
-  const initialFilterOption: IFilterOption = {
-    type: "DALLAEMFIT",
-    sortBy: "registrationEnd",
-    sortOrder: "desc",
-    limit: 12,
-  }
-
-  const { data, isPending } = useGetMeetingList(initialFilterOption)
-
-  return { data, isPending }
-}
-
 const PendingRender = ({
   isPending,
   data,
@@ -196,4 +134,66 @@ const PendingRender = ({
       </Swiper>
     )
   )
+}
+
+const useSwiperOptions = ({ data }: { data?: InfiniteData<IMeetingData[], unknown> }) => {
+  const dotUl = useRef<HTMLUListElement>(null)
+  const [realIndex, setRealIndex] = useState(1)
+  const [snapLength, setSnapLength] = useState(1)
+  const [swiperSetting, setSwiperSetting] = useState<SwiperProps | null>(null)
+
+  useEffect(() => {
+    if (!swiperSetting && data) {
+      setSwiperSetting({
+        speed: 800,
+        slidesPerView: 1,
+        slidesPerGroup: 1,
+        spaceBetween: 30,
+        loop: true,
+        breakpoints: {
+          769: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+          },
+          1280: {
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+          },
+        },
+        autoplay: {
+          delay: 8000,
+          pauseOnMouseEnter: true,
+        },
+        pagination: {
+          el: dotUl.current,
+          clickable: true,
+          renderBullet: (_, className: string) => {
+            return `<li class="${className}"/>`
+          },
+        },
+        modules: [Pagination, Autoplay],
+        onSlideChange: (swiper: SwiperCore) => {
+          const slidesPerGroup = swiper.params.slidesPerGroup || 0
+          const snapL = swiper.snapGrid.length
+          setRealIndex(swiper.realIndex / slidesPerGroup + 1)
+          setSnapLength(snapL)
+        },
+      })
+    }
+  }, [swiperSetting, data])
+
+  return { realIndex, snapLength, dotUl, swiperSetting }
+}
+
+const useInfiniteMeeting = () => {
+  const initialFilterOption: IFilterOption = {
+    type: "DALLAEMFIT",
+    sortBy: "registrationEnd",
+    sortOrder: "desc",
+    limit: 12,
+  }
+
+  const { data, isPending } = useGetMeetingList(initialFilterOption)
+
+  return { data, isPending }
 }

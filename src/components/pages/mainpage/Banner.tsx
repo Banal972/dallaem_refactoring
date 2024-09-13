@@ -8,36 +8,10 @@ import SwiperCore from "swiper"
 import { Autoplay, Pagination, Parallax } from "swiper/modules"
 import { Swiper, SwiperProps, SwiperSlide } from "swiper/react"
 
+SwiperCore.use([Pagination])
+
 const Banner = () => {
-  SwiperCore.use([Pagination])
-
-  const dotUl = useRef<HTMLUListElement>(null)
-  const [realIndex, setRealIndex] = useState(1)
-  const [swiperSetting, setSwiperSetting] = useState<SwiperProps | null>(null)
-
-  useEffect(() => {
-    if (!swiperSetting) {
-      setSwiperSetting({
-        pagination: {
-          el: dotUl.current,
-          clickable: true,
-          renderBullet: (_, className: string) => {
-            return `<li class="${className}"/>`
-          },
-        },
-        autoplay: {
-          delay: 6000,
-        },
-        modules: [Pagination, Parallax, Autoplay],
-        speed: 800,
-        parallax: true,
-        loop: true,
-        onSlideChange: (swiper: SwiperCore) => {
-          setRealIndex(swiper.realIndex + 1)
-        },
-      })
-    }
-  }, [swiperSetting])
+  const { swiperSetting, realIndex, dotUl } = useSwiperOptions()
 
   return (
     <div className="relative">
@@ -118,3 +92,35 @@ const Banner = () => {
 }
 
 export default Banner
+
+const useSwiperOptions = () => {
+  const dotUl = useRef<HTMLUListElement>(null)
+  const [realIndex, setRealIndex] = useState(1)
+  const [swiperSetting, setSwiperSetting] = useState<SwiperProps | null>(null)
+
+  useEffect(() => {
+    if (!swiperSetting) {
+      setSwiperSetting({
+        pagination: {
+          el: dotUl.current,
+          clickable: true,
+          renderBullet: (_, className: string) => {
+            return `<li class="${className}"/>`
+          },
+        },
+        autoplay: {
+          delay: 6000,
+        },
+        modules: [Pagination, Parallax, Autoplay],
+        speed: 800,
+        parallax: true,
+        loop: true,
+        onSlideChange: (swiper: SwiperCore) => {
+          setRealIndex(swiper.realIndex + 1)
+        },
+      })
+    }
+  }, [swiperSetting])
+
+  return { swiperSetting, realIndex, dotUl }
+}
