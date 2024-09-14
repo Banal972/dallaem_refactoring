@@ -1,6 +1,11 @@
 import { Dispatch, ReactNode, SetStateAction } from "react"
 
-export type TIsLogin = boolean
+type DefaultHandler = () => void
+type SetAction<T> = Dispatch<SetStateAction<T>>
+
+export interface ILogInState {
+  isLogin: boolean
+}
 
 export interface IAuthLayoutProps {
   children: ReactNode
@@ -11,7 +16,7 @@ export interface IButtonProps extends IAuthLayoutProps {
   borderStyle: "solid" | "outlined"
   type?: "submit" | "reset" | "button"
   disabled?: boolean
-  onClick?: () => void
+  onClick?: DefaultHandler
 }
 
 export interface IGetClassesProps extends Pick<IButtonProps, "disabled" | "borderStyle"> {}
@@ -35,20 +40,16 @@ export declare module "@auth/core/jwt" {
   }
 }
 
-export interface IAuthModalProps {
-  isLogin: TIsLogin
-  closeLoginHandler: () => void
-}
-
-export interface IUseAuthModalAni {
-  isLogin: TIsLogin
-  setIsStep: Dispatch<SetStateAction<number>>
+export interface IAuthModalProps extends ILogInState {
+  closeLoginHandler: DefaultHandler
 }
 
 export interface ISignModalProps {
-  setIsStep: Dispatch<SetStateAction<number>>
+  setIsStep: SetAction<number>
 }
 
+export interface IUseAuthModalAni extends ILogInState, ISignModalProps {}
+
 export interface ICompleteSignUpModalProps {
-  onClick: () => void
+  onClick: DefaultHandler
 }

@@ -5,13 +5,15 @@ import { SwiperProps } from "swiper/react"
 
 export type TuseSwiperOptionsProps = InfiniteData<IMeetingData[], unknown> | undefined
 
-export interface INewMeetingRenderProps {
+interface IPendingState {
   isPending: boolean
+}
+
+export interface INewMeetingRenderProps extends IPendingState {
   data: TuseSwiperOptionsProps
   swiperSetting: SwiperProps | null
 }
 
-export interface IMainReviewRenderProps {
-  isPending: boolean
+export interface IMainReviewRenderProps extends IPendingState {
   data: IAllReview[][]
 }

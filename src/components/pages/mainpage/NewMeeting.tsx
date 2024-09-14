@@ -39,7 +39,7 @@ const NewMeeting = () => {
 export default NewMeeting
 
 const PendingRender = ({ isPending, data, swiperSetting }: INewMeetingRenderProps) => {
-  const emptyData = !data || data.pages[0].length === 0
+  const isEmptyData = !data || data.pages[0].length === 0
 
   if (isPending) {
     return (
@@ -57,7 +57,7 @@ const PendingRender = ({ isPending, data, swiperSetting }: INewMeetingRenderProp
     )
   }
 
-  if (emptyData) {
+  if (isEmptyData) {
     return (
       <p className="w-full py-10 text-center text-sm text-gray-500">첫 모임을 등록해주세요! 🖐️</p>
     )
