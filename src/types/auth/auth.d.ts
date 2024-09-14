@@ -1,21 +1,14 @@
-import { ReactNode } from "react"
+import { Dispatch, ReactNode, SetStateAction } from "react"
 
-export interface IAuthPageProps {
-  searchParams: { mode?: string }
+type DefaultHandler = () => void
+type SetAction<T> = Dispatch<SetStateAction<T>>
+
+export interface ILogInState {
+  isLogin: boolean
 }
 
 export interface IAuthLayoutProps {
   children: ReactNode
-}
-
-export interface ISigninData {
-  email: string
-  password: string
-}
-
-export interface ISignupData extends ISigninData {
-  name: string
-  companyName: string
 }
 
 export interface IButtonProps extends IAuthLayoutProps {
@@ -23,37 +16,10 @@ export interface IButtonProps extends IAuthLayoutProps {
   borderStyle: "solid" | "outlined"
   type?: "submit" | "reset" | "button"
   disabled?: boolean
-  onClick?: () => void
+  onClick?: DefaultHandler
 }
 
 export interface IGetClassesProps extends Pick<IButtonProps, "disabled" | "borderStyle"> {}
-
-export interface IMessage {
-  message: string
-}
-
-export interface IValidationError extends IMessage {
-  code: "VALIDATION_ERROR"
-  parameter: "email"
-}
-
-export interface IInvalidCredentials extends IMessage {
-  code: "INVALID_CREDENTIALS"
-}
-
-export interface ILoginSuccess {
-  token: string
-}
-
-export type TSigninResponse = IValidationError | IInvalidCredentials | ILoginSuccess
-
-export interface IEmailExists extends IMessage {
-  code: "EMAIL_EXISTS"
-}
-
-export type TSignupResponse = IEmailExists | IValidationError | IMessage
-
-// 리팩토링 후
 
 export interface PasswordVisibility {
   showPwd: boolean
@@ -72,4 +38,18 @@ export declare module "@auth/core/jwt" {
   interface JWT {
     accessToken: string
   }
+}
+
+export interface IAuthModalProps extends ILogInState {
+  closeLoginHandler: DefaultHandler
+}
+
+export interface ISignModalProps {
+  setIsStep: SetAction<number>
+}
+
+export interface IUseAuthModalAni extends ILogInState, ISignModalProps {}
+
+export interface ICompleteSignUpModalProps {
+  onClick: DefaultHandler
 }

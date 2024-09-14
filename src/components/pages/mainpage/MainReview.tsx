@@ -9,7 +9,7 @@ import MainReviewSkeleton from "@/components/public/Skeleton/MainReviewSkeleton"
 import Spinner from "@/components/public/Spinner/Spinner"
 import LIMIT from "@/constants/limit"
 import { useAllReview } from "@/hooks/Review/useAllReview"
-import { IAllReview } from "@/types/review/review"
+import { IMainReviewRenderProps } from "@/types/main/main"
 import HeartSVG from "@public/icon/dynamicIcon/heart.svg"
 import dayjs from "dayjs"
 
@@ -31,7 +31,7 @@ const MainReview = () => {
 
 export default MainReview
 
-const PendingRender = ({ isPending, data }: { isPending: boolean; data: IAllReview[][] }) => {
+const PendingRender = ({ isPending, data }: IMainReviewRenderProps) => {
   const isEmptyData = !data || (data && data[0]?.length === 0)
 
   if (isPending) {

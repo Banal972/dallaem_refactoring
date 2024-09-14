@@ -4,13 +4,14 @@ import { signIn } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-import { Dispatch, SetStateAction, useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import Input from "@/components/pages/auth/Modal/Atoms/Input"
 import VerifyBtn from "@/components/pages/auth/Modal/Atoms/VerifyBtn"
+import { ISignModalProps } from "@/types/auth/auth"
 
-const LoginModal = ({ setIsStep }: { setIsStep: Dispatch<SetStateAction<number>> }) => {
+const LoginModal = ({ setIsStep }: ISignModalProps) => {
   const { register, errors, error, onSubmit } = useSubmit()
   const { isShowPwd, onIsShowClickHanlder } = useShowPwd()
 

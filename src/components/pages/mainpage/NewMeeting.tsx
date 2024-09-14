@@ -8,15 +8,15 @@ import { useEffect, useRef, useState } from "react"
 import DateTag from "@/components/pages/findMeeting/MeetingCard/Atoms/DateTag"
 import MainCardSkeleton from "@/components/public/Skeleton/MainCardSkeleton"
 import useGetMeetingList from "@/hooks/useGetMeetingList"
-import { IFilterOption, IMeetingData } from "@/types/findMeeting/findMeeting"
-import { InfiniteData } from "@tanstack/react-query"
+import { IFilterOption } from "@/types/findMeeting/findMeeting"
+import { INewMeetingRenderProps, TuseSwiperOptionsProps } from "@/types/main/main"
 import SwiperCore from "swiper"
 import { Autoplay, Pagination } from "swiper/modules"
 import { Swiper, SwiperProps, SwiperSlide } from "swiper/react"
 
 const NewMeeting = () => {
   const { data, isPending } = useInfiniteMeeting()
-  const { realIndex, snapLength, dotUl, swiperSetting } = useSwiperOptions({ data })
+  const { realIndex, snapLength, dotUl, swiperSetting } = useSwiperOptions(data)
 
   return (
     <>
@@ -38,7 +38,99 @@ const NewMeeting = () => {
 
 export default NewMeeting
 
-const useSwiperOptions = ({ data }: { data?: InfiniteData<IMeetingData[], unknown> }) => {
+const PendingRender = ({ isPending, data, swiperSetting }: INewMeetingRenderProps) => {
+  const isEmptyData = !data || data.pages[0].length === 0
+
+  if (isPending) {
+    return (
+      <div className="grid grid-cols-1 gap-[30px] md:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <MainCardSkeleton />
+        </div>
+        <div>
+          <MainCardSkeleton />
+        </div>
+        <div className="hidden md:block">
+          <MainCardSkeleton />
+        </div>
+      </div>
+    )
+  }
+
+  if (isEmptyData) {
+    return (
+      <p className="w-full py-10 text-center text-sm text-gray-500">첫 모임을 등록해주세요! 🖐️</p>
+    )
+  }
+
+  return (
+    swiperSetting && (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <Swiper {...swiperSetting}>
+        {data?.pages.map((pages) => {
+          return pages.map((meeting) => {
+            return (
+              <SwiperSlide key={meeting.id} className="!h-auto">
+                <Link href={`/findMeeting/${meeting.id}`} className="block h-full">
+                  <div className="flex h-full flex-col overflow-hidden rounded-2xl border">
+                    <div className="relative w-full after:block after:pb-[calc(265/463*100%)]">
+                      <Image
+                        src={meeting.image}
+                        alt={`${meeting.name} 이미지`}
+                        fill
+                        className="object-cover"
+                        priority
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    </div>
+                    <div className="flex-1 p-4 px-5">
+                      <div className="flex flex-wrap items-center">
+                        <h2 className="text-lg font-semibold text-gray-800 after:px-2 after:content-['|']">
+                          {meeting.name}
+                        </h2>
+                        <span className="text-sm font-medium text-gray-700">
+                          {meeting.location}
+                        </span>
+                      </div>
+                      <div className="mt-4">
+                        <DateTag date={meeting.dateTime} />
+                      </div>
+                      <div className="mt-5 flex gap-[11px]">
+                        <div className="flex items-center gap-[2px]">
+                          <Image
+                            src="/icon/staticIcon/person.svg"
+                            alt="참가인원"
+                            width={16}
+                            height={16}
+                            className="mr-[2px]"
+                          />
+                          {meeting.participantCount}/{meeting.capacity}
+                        </div>
+                        {Number(meeting.participantCount) >= 5 && (
+                          <div className="flex items-center gap-1">
+                            <Image
+                              src="/icon/staticIcon/confirmed.svg"
+                              alt="개설확정"
+                              width={24}
+                              height={24}
+                            />
+                            <span className="text-sm text-primary">개설확정</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            )
+          })
+        })}
+      </Swiper>
+    )
+  )
+}
+
+const useSwiperOptions = (data: TuseSwiperOptionsProps) => {
   const dotUl = useRef<HTMLUListElement>(null)
   const [realIndex, setRealIndex] = useState(1)
   const [snapLength, setSnapLength] = useState(1)
@@ -98,102 +190,4 @@ const useInfiniteMeeting = () => {
   const { data, isPending } = useGetMeetingList(initialFilterOption)
 
   return { data, isPending }
-}
-
-const PendingRender = ({
-  isPending,
-  data,
-  swiperSetting,
-}: {
-  isPending: boolean
-  data?: InfiniteData<IMeetingData[], unknown>
-  swiperSetting: SwiperProps | null
-}) => {
-  if (isPending) {
-    return (
-      <div className="grid grid-cols-1 gap-[30px] md:grid-cols-2 lg:grid-cols-3">
-        <div>
-          <MainCardSkeleton />
-        </div>
-        <div>
-          <MainCardSkeleton />
-        </div>
-        <div className="hidden md:block">
-          <MainCardSkeleton />
-        </div>
-      </div>
-    )
-  }
-
-  if (!data || data.pages[0].length === 0) {
-    return (
-      <p className="w-full py-10 text-center text-sm text-gray-500">첫 모임을 등록해주세요! 🖐️</p>
-    )
-  }
-
-  return (
-    swiperSetting && (
-      // eslint-disable-next-line react/jsx-props-no-spreading
-      <Swiper {...swiperSetting}>
-        {data?.pages.map((pages) => {
-          return pages.map((meeting) => {
-            return (
-              <SwiperSlide key={meeting.id} className="!h-auto">
-                <Link href={`/findMeeting/${meeting.id}`} className="block h-full">
-                  <div className="flex h-full flex-col overflow-hidden rounded-2xl border">
-                    <div className="relative w-full after:block after:pb-[calc(265/463*100%)]">
-                      <Image
-                        src={meeting.image}
-                        alt={`${meeting.name} 이미지`}
-                        fill
-                        className="object-cover"
-                        priority
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                    </div>
-                    <div className="flex-1 p-4 px-5">
-                      <div className="flex flex-wrap items-center">
-                        <h2 className="text-lg font-semibold text-gray-800 after:px-2 after:content-['|']">
-                          {meeting.name}
-                        </h2>
-                        <span className="text-sm font-medium text-gray-700">
-                          {meeting.location}
-                        </span>
-                      </div>
-                      <div className="mt-4">
-                        <DateTag date={meeting.dateTime} />
-                      </div>
-                      <div className="mt-5 flex gap-[11px]">
-                        <div className="flex items-center gap-[2px]">
-                          <Image
-                            src="/icon/staticIcon/person.svg"
-                            alt="참가인원"
-                            width={16}
-                            height={16}
-                            className="mr-[2px]"
-                          />{" "}
-                          {meeting.participantCount}/{meeting.capacity}
-                        </div>
-                        {Number(meeting.participantCount) >= 5 && (
-                          <div className="flex items-center gap-1">
-                            <Image
-                              src="/icon/staticIcon/confirmed.svg"
-                              alt="개설확정"
-                              width={24}
-                              height={24}
-                            />{" "}
-                            <span className="text-sm text-primary">개설확정</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </SwiperSlide>
-            )
-          })
-        })}
-      </Swiper>
-    )
-  )
 }
