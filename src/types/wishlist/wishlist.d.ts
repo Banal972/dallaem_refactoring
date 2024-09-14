@@ -1,5 +1,7 @@
 import { IMeetingData } from "@/types/findMeeting/findMeeting"
 
+type DefaultHandler = () => void
+
 export interface IByeBtnProps {
   list: IWishListData
   removeHandler: (id: number) => void
@@ -10,6 +12,6 @@ export interface IWishListData extends IMeetingData {
 }
 
 export interface IResetFilterProps {
-  onClick: () => void
+  onClick: DefaultHandler
   isVisible: boolean
 }
