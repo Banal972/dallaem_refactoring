@@ -3,19 +3,15 @@ import { IFilterOption, TCustomOnSelect } from "@/types/findMeeting/findMeeting"
 type TteamID = {
   teamId: string
 }
-
 export type TReviewScoreRatings = {
   rating: number
   count: number
 }
-
 export type TScoresType = Pick<IFilterOption, "type">
-
 export type TReviewFilterOptions = Pick<
   IFilterOption,
   "sortOrder" | "location" | "date" | "createdBy"
 >
-
 export type TuseScoreCalculation = IScoreReview[] | undefined
 
 interface IUser extends TteamID {
@@ -83,4 +79,9 @@ export interface IReviewScoreReturn {
   allScore: string
   maxScore: number
   ratings: TReviewScoreRatings[]
+}
+
+export interface IReviewRednerProps {
+  data: IAllReview[][]
+  isPending: boolean
 }

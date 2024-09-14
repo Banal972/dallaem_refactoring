@@ -6,18 +6,30 @@ import {
   InfiniteQueryObserverResult,
 } from "@tanstack/react-query"
 
+type DefaultHandler = () => void
+type SetAction<T> = Dispatch<SetStateAction<T>>
+
+type TCustomImage = {
+  file: File | null
+  name: string
+}
+
+type TCustomOnSelect = (
+  event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>,
+) => void
+
 export type FetchFunction = (
   options?: FetchNextPageOptions,
 ) => Promise<InfiniteQueryObserverResult<InfiniteData<IMeetingData[], unknown>, Error>>
-
-export interface DefaultHandlerProp {
-  [key: string]: () => void
-}
 
 export type TCustomFilterEvent =
   | MouseEvent<HTMLButtonElement>
   | KeyboardEvent<HTMLButtonElement>
   | string
+
+export interface DefaultHandlerProp {
+  [key: string]: DefaultHandler
+}
 
 export interface IFilterOption {
   type: string
@@ -52,11 +64,6 @@ export interface IMeetingData
   createdBy: number
 }
 
-type TCustomImage = {
-  file: File | null
-  name: string
-}
-
 export interface ICustomResponse {
   code: string
   message: string
@@ -84,10 +91,6 @@ export interface IGatheringData
   image: TCustomImage
 }
 
-type TCustomOnSelect = (
-  event: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLButtonElement>,
-) => void
-
 export interface IFilterTabProps {
   selVal: string
   onSelect: TCustomOnSelect
@@ -111,12 +114,12 @@ export interface IMeetingListProps {
 export interface ICompleteSignUpModalProps {
   children: ReactNode
   isOneBtn: boolean
-  onConfirmClick: () => void
+  onConfirmClick: DefaultHandler
 }
 
 export interface ISelectServiceRadioGroupProps {
   meetingData: IMeetingDataState
-  setMeetingData: Dispatch<SetStateAction<IMeetingDataState>>
+  setMeetingData: SetAction<IMeetingDataState>
 }
 
 export interface IParams {
@@ -141,5 +144,5 @@ export interface IBannerProps {
   isJoined: boolean
   limit: number
   participant: number
-  setHeight: Dispatch<SetStateAction<number>>
+  setHeight: SetAction<number>
 }

@@ -14,9 +14,29 @@ import Heart from "@public/icon/dynamicIcon/heart.svg"
  */
 
 const WishBtn = ({ list }: { list: IWishListData }) => {
+  const { isWish, HandlerWish } = useWish({ list })
+
+  return (
+    <button
+      aria-label="wishAdd"
+      type="button"
+      onClick={HandlerWish}
+      className={`relative flex size-12 cursor-pointer items-center justify-center rounded-full ${!isWish ? "border-2 border-gray-200 bg-white" : "bg-orange-50"}`}
+    >
+      <Heart className="w-[22px] stroke-gray-400 stroke-2 text-white" />
+      <Heart
+        className={`absolute w-[22px] origin-center stroke-orange-600 stroke-2 text-orange-600 transition-all duration-300 ${!isWish && "scale-0 opacity-0"}`}
+      />
+    </button>
+  )
+}
+
+export default WishBtn
+
+const useWish = ({ list }: { list: IWishListData }) => {
+  const [isWish, setIsWish] = useState(false)
   const { openToast } = useToast()
   const session = useSession()
-  const [isWish, setIsWish] = useState(false)
   const { setWishCount } = useWishCount()
 
   const HandlerWish = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -62,19 +82,5 @@ const WishBtn = ({ list }: { list: IWishListData }) => {
     setIsWish(findWish?.wish || false)
   }, [list])
 
-  return (
-    <button
-      aria-label="wishAdd"
-      type="button"
-      onClick={HandlerWish}
-      className={`relative flex size-12 cursor-pointer items-center justify-center rounded-full ${!isWish ? "border-2 border-gray-200 bg-white" : "bg-orange-50"}`}
-    >
-      <Heart className="w-[22px] stroke-gray-400 stroke-2 text-white" />
-      <Heart
-        className={`absolute w-[22px] origin-center stroke-orange-600 stroke-2 text-orange-600 transition-all duration-300 ${!isWish && "scale-0 opacity-0"}`}
-      />
-    </button>
-  )
+  return { isWish, HandlerWish }
 }
-
-export default WishBtn

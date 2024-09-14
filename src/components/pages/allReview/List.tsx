@@ -16,13 +16,8 @@ import LIMIT from "@/constants/limit"
 import { location } from "@/constants/meeting"
 import ROUTE from "@/constants/route"
 import { useAllReview } from "@/hooks/Review/useAllReview"
-import { IAllReview, TReviewFilterOptions } from "@/types/review/review"
+import { IReviewRednerProps, TReviewFilterOptions } from "@/types/review/review"
 import onFilterChanged from "@/util/onFilterChanged"
-
-interface ReviewRednerProps {
-  data: IAllReview[][]
-  isPending: boolean
-}
 
 const List = () => {
   const filterOptions: TReviewFilterOptions = {
@@ -94,7 +89,7 @@ const List = () => {
 
 export default List
 
-const ReviewRedner = ({ data, isPending }: ReviewRednerProps) => {
+const ReviewRedner = ({ data, isPending }: IReviewRednerProps) => {
   const isEmptyData = !data || (data && data[0]?.length === 0)
 
   if (isPending) {
