@@ -57,7 +57,11 @@ const PendingRender = ({ isPending, data }: IMainReviewRenderProps) => {
       {data.map((reviews) => {
         return reviews.map((review) => {
           return (
-            <div key={review.id} className="rounded-lg border border-primary/60 px-6 py-7 lg:py-9">
+            <div
+              key={review.id}
+              className="rounded-lg border border-primary/60 px-6 py-7 lg:py-9"
+              data-cy="reviews"
+            >
               <div className="flex items-center gap-2">
                 <div className="relative size-8 overflow-hidden rounded-full border">
                   <Image

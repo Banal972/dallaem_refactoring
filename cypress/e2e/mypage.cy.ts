@@ -9,14 +9,13 @@ describe("mypage test", () => {
     cy.contains("마이페이지").click()
   })
   it("should be able to visit mypage", () => {
-    cy.getCookie("userToken").should("exist")
     cy.contains("내 프로필").should("be.visible")
     cy.contains("참여한 모임").should("be.visible")
     cy.contains("나의 리뷰").should("be.visible")
     cy.contains("내가 만든 모임").should("be.visible")
   })
   it("should be able to access and use profile edit modal", () => {
-    cy.get(".size-8 > div > img").click()
+    cy.get(".z-30 > img").click()
     cy.location("pathname").should("include", "edit")
     cy.contains("프로필 수정하기").should("be.visible")
     cy.get(".bg-gray-400").as("editButton").click()

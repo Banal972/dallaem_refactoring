@@ -36,10 +36,11 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add("login", () => {
-  cy.visit("/auth?mode=signin")
+  cy.visit("/")
+  cy.contains("로그인").click()
   const testId = Cypress.env("TEST_ID")
   const testPassword = Cypress.env("TEST_PASSWORD")
   cy.get("#email").type(testId)
   cy.get("#password").type(testPassword)
-  cy.get(".group").click()
+  cy.get(".mt-8").click()
 })
